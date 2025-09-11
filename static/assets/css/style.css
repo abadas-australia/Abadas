@@ -684,7 +684,7 @@ nav .nav-menu-icon{
 
 .banner {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
     position: absolute;
     width: 100%;
@@ -693,7 +693,7 @@ nav .nav-menu-icon{
     z-index: 1;
     transition: opacity 1s ease-in-out;
     transition: opacity 1s ease-in-out;
-    background: linear-gradient(to right, #f0f0f0 62%, #bab3a6 38%);
+    background: linear-gradient(to right, #f0f0f0 50%, #bab3a6 50%);
 }
 
 .banner.active {
@@ -729,7 +729,13 @@ nav .nav-menu-icon{
 }
 
 .banner-info {
+    width: calc(100% / 3);
+    height: 100%;
     padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .banner-info h1 {
@@ -752,18 +758,28 @@ nav .nav-menu-icon{
 
 .banner-image{
     width: calc(100% / 3);
-    max-width: max-content;
+    height: 100%;
+    /* max-width: max-content; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .banner-image img {
     width: 100%;
-    margin: 20px;
-    transform: rotate(5deg);
+    /* transform: rotate(5deg); */
     border: 10px solid #fff;
     box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.15);
 }
 
 .banner-image-info{
+    width: calc(100% / 3);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
     padding: 50px;
 }
 

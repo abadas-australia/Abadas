@@ -520,12 +520,29 @@ header nav .nav-menu-bar a svg:hover{
     background: linear-gradient(to right, #f0f0f0 50%, #bab3a6 50%);
 }
 
+.home .banner .banner-info{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.banner .banner-info h1{
+    padding: 0 50px;
+}
+
 .banner .banner-image, .banner .banner-image-info{
     display: none;
 }
 
 .banner .banner-image-tab, .banner .banner-image-info-tab{
     display: block;
+}
+
+.banner .banner-info br{
+    display: none;
 }
 
 .banner .banner-image-info-tab{
@@ -542,9 +559,6 @@ header nav .nav-menu-bar a svg:hover{
 
 .banner .banner-image-info-tab h1{
     margin: 20px;
-}
-
-.banner .banner-image-info-tab h1{
     text-transform: lowercase;
     font-size: 24px;
     font-weight: 700;
