@@ -18,6 +18,10 @@
     .banner-mobile .banner-mobile-button {
         bottom: 20%;
     }
+
+    .category-items .category-list{
+        min-width: calc(100% / 1 - 10px);
+    }
 }
 
 @media (max-width: 767px){
@@ -112,7 +116,11 @@ header nav .nav-menu-bar a svg:hover{
     font-size: 14px;
     padding: 8px;
 }
- 
+
+.category-items .category-list{
+    width: calc(100% / 2 - 10px);
+}
+
 /* --------------------------------------------- home --------------------------------------------- */
 
 #home  .home {
@@ -499,6 +507,10 @@ header nav .nav-menu-bar a svg:hover{
 }
 
 .search-category-container .search-category-item {
+    width: calc(100% / 3 - 10px);
+}
+
+.category-items .category-list{
     width: calc(100% / 3 - 10px);
 }
 
