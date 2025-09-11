@@ -697,7 +697,7 @@ nav .nav-menu-icon{
     z-index: 1;
     transition: opacity 1s ease-in-out;
     transition: opacity 1s ease-in-out;
-    background: linear-gradient(to right, #f0f0f0 50%, #bab3a6 50%);
+    background: linear-gradient(to right, #f0f0f0 55%, #bab3a6 45%);
 }
 
 .banner.active {
