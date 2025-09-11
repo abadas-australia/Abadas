@@ -1,0 +1,68 @@
+{% extends "base.html" %} 
+{% block title %} Abadas | Contact Us {% endblock title %}
+{% block content %}
+
+<section id="contact">
+    <div class="contact">
+        <div>
+            <iframe style="border:0; width: 100%; height: 270px;"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d451114.05591179145!2d153.03968898845892!3d-27.953222189462842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b911a472b5d60b7%3A0x302a35af3deaf70!2sGold%20Coast%20QLD%2C%20Australia!5e0!3m2!1sen!2sbd!4v1757569982675!5m2!1sen!2sbd"
+                frameborder="0" allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-4">
+                <div class="contact-info">
+                    <div class="contact-info-address">
+                        <i class="bi bi-geo-alt"></i>
+                        <h4>Location:</h4>
+                        <p>Gold Coast, QLD, Australia, 4215</p>
+                    </div>
+
+                    <div class="contact-info-email">
+                        <i class="bi bi-envelope"></i>
+                        <h4>Email:</h4>
+                        <p>abadasaustralia@gmail.com</p>
+                    </div>
+
+                    <div class="contact-info-phone">
+                        <i class="bi bi-phone"></i>
+                        <h4>Call:</h4>
+                        <p>+61 432 078 656</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 mt-5 mt-lg-0">
+                <form action="" method="post">
+                    {% csrf_token %}
+
+                    <label for="contact-name">Name</label>
+                    <div class="contact-form-input">
+                        <input type="text" class="form-control p-4" id="contact-name" name="contact-name" required />
+                    </div>
+
+                    <label for="contact-email">Email</label>
+                    <div class="contact-form-input">
+                        <input type="email" class="form-control p-4" id="contact-email" name="contact-email" required />
+                    </div>
+
+                    <label for="contact-subject">Subject</label>
+                    <div class="contact-form-input">
+                        <input type="text" class="form-control p-4" id="contact-subject" name="contact-subject" required />
+                    </div>
+
+                    <label for="contact-message">Message</label>
+                    <div class="contact-form-input">
+                        <textarea type="text" class="form-control p-4" id="contact-message" name="contact-message" required></textarea>
+                    </div>
+                    <br>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

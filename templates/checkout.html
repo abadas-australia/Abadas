@@ -1,0 +1,261 @@
+{% extends "base.html" %} 
+{% block title %}Abadas | Checkout{% endblock title %} 
+{% block content %} 
+{% load static %}
+
+<section id="checkout">
+    <div class="checkout">
+
+        <div class="checkout-title">
+            <h3>Checkout Page</h3>
+            <p>You're just a few steps away from completing your purchase. Review your items and ensure all your details are correct before finalizing your order. </p>
+        </div>
+
+        <div class="checkout-container">
+            <div class="checkout-review">
+                <h2>Step 1 - My Cart Checkout - Review Your Cart Items</h2>
+                <div>
+                    <div class="checkout-list">
+                        <ul class="list-group" id="items">
+                        
+                        </ul>
+                    </div>
+                    
+                    <div class="checkout-total">
+                        <p>Your Cart Total Is <b>$ <span id="totalprice"></span> <span id="amount"></span></b>. Enter your details below & place your order. Thank you for using Wear Vault.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="checkout-form">
+                <h2>Step 2 - Enter Address & Other Details:</h2>
+                <form method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="itemsJson" id="itemsJson">
+                    <input type="hidden" id="amt" name="amt">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputname">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Email</label>
+                            <input type="email" class="form-control email" id="email" name="email" value="{{user.email}}" required>
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputAddress">Address</label>
+                            <input type="text" class="form-control" id="address1" name="address1" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputAddress">Address line 2(Optional)</label>
+                            <input type="text" class="form-control" id="address2" name="address2">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCity">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputState">State</label>
+                            <input type="text" class="form-control" id="state" name="state" required>
+                        </div>
+                        </div>
+
+                     <div class="form-row">
+                     <div class="form-group col-md-6">
+                            <label for="inputZip">Pin Code</label>
+                            <input type="number" class="form-control" id="zip_code" name="zip_code" required>
+                        </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputZip">Phone Number</label>
+                        <input type="number" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <br>
+
+                    <div class="payment-options col-md-12">
+                        <h2>Step 3 - Payment</h2>
+
+                        <div class="place-order">
+                            <p>Select your preferred payment method:</p>
+
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="paypal" required>
+                                <div class="payment-content">
+                                    <span>PayPal</span>
+                                    <img src="{% static '/images/paypal.png' %}" alt="PayPal" height="24">
+                                </div>
+                            </label>
+
+                            <div id="paypalpay" class="col-lg-12 d-flex justify-content-center">
+                                <button id="btn-place-order" type="submit" class="paypal-button"> <img src="{% static '/images/paypal.png' %}" alt="PayPal" height="24"> </button>
+                            </div>
+
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="card" required>
+                                <div class="payment-content">
+                                    <span>Credit or Debit Card</span>
+                                    <div class="payment-icons">
+                                        <img src="{% static '/images/visa.png' %}" alt="Visa">
+                                        <img src="{% static '/images/mastercard.png' %}" alt="Mastercard">
+                                        <span>+3</span>
+                                    </div>
+                                </div>
+                            </label>
+                        
+                            <!-- PayPal Buttons -->
+                            <div id="paypal-button-container"></div>
+                            
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const paypalRadio = document.querySelector('input[value="paypal"]');
+        const cardRadio = document.querySelector('input[value="card"]');
+        
+
+        // Disable the PayPal button initially
+        const paypalButtonContainer = document.getElementById('paypal-button-container');
+        paypalButtonContainer.style.pointerEvents = "none"; // Disable clicks
+        paypalButtonContainer.style.opacity = "0.5"; // Visual indicator of disabled state
+        paypalButtonContainer.style.display = "none"; // Visual indicator of disabled state
+
+
+        const paypalpay = document.getElementById('btn-place-order');
+        paypalpay.style.pointerEvents = "none";
+        paypalpay.style.opacity = "0.5";
+        paypalpay.style.display = "none";
+
+
+        // Form validation function
+        function validateForm() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.querySelector('.email').value.trim();
+            const address1 = document.getElementById('address1').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const zipCode = document.getElementById('zip_code').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            // Check if all required fields are filled
+            return name && email && address1 && city && state && zipCode && phone;
+        }
+
+        // Enable PayPal button when the form is valid
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                if (validateForm()) {
+                    
+                    if (cardRadio.checked) {
+                        paypalButtonContainer.style.pointerEvents = "auto";
+                        paypalButtonContainer.style.opacity = "1";
+                        paypalButtonContainer.style.display = "block";
+                        paypalpay.style.display = "none";
+                    }
+
+                    if (paypalRadio.checked) {
+                        paypalpay.style.pointerEvents = "auto";
+                        paypalpay.style.opacity = "1";
+                        paypalpay.style.display = "block";
+                        paypalButtonContainer.style.display = "none";
+                    }
+                        
+                } else {
+                    paypalButtonContainer.style.pointerEvents = "none";
+                    paypalButtonContainer.style.opacity = "0.5";
+
+                    paypalpay.style.pointerEvents = "none";
+                    paypalpay.style.opacity = "0.5";
+                }
+            });
+        });
+
+        paypal.Buttons({
+            
+            fundingSource: paypal.FUNDING.CARD, // This ensures only the card button is rendered.
+
+            createOrder: function (data, actions) {
+
+                if (!validateForm()) {
+                    alert('Please fill out the form completely before proceeding to payment.');
+                    return;
+                }
+
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: document.getElementById('amt').value, // Total amount from the form
+                        },
+                    }],
+                });
+            },
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (details) {
+                    console.log("Transaction completed by " + details.payer.name.given_name);
+        
+                    // Prepare the form data for submission
+                    const formData = new FormData();
+                    formData.append('transaction_id', details.id);
+                    formData.append('items_json', document.getElementById('itemsJson').value);
+                    formData.append('amount', document.getElementById('amt').value);
+                    formData.append('name', document.getElementById('name').value);
+                    formData.append('email', document.querySelector('.email').value);
+                    formData.append('address1', document.getElementById('address1').value);
+                    formData.append('address2', document.getElementById('address2').value);
+                    formData.append('city', document.getElementById('city').value);
+                    formData.append('state', document.getElementById('state').value);
+                    formData.append('zip_code', document.getElementById('zip_code').value);
+                    formData.append('phone', document.getElementById('phone').value);
+                    formData.append('amount_paid', details.purchase_units[0].amount.value);
+        
+                    // Send data to the backend
+                    fetch('/shop/payment/success/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/shop/payment/success/';
+                        } else {
+                            alert('Error saving the order. Please contact support.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                    });
+                });
+            },
+            onCancel: function (data) {
+                alert('Payment cancelled.');
+                window.location.href = '/shop/payment/cancel/';
+            },
+            onError: function (err) {
+                console.error('Payment error:', err);
+                alert('Something went wrong with the payment. Please try again.');
+            }
+        }).render('#paypal-button-container');
+        
+    });
+</script>
+
+
+
+{% endblock content %}

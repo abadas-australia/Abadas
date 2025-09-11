@@ -1,0 +1,34 @@
+{%load static %}
+<footer>
+    <div class="footer">
+        <div class="footer-logo">
+            <a href="#home"><img src="{% static '/images/logo.png' %}" alt="" width="120" height="80"></a>
+        </div>
+        <div class="footer-link">
+            <ul class="d-flex justify-content-center">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#category">Category</a></li>
+                <li><a href="#arrivals">Arrivals</a></li>
+                <li><a href="#trending">Trending</a></li>
+                {% url 'about' as url %}
+                <li><a href="{{url}}">About Us</a></li>
+                {% url 'contact' as url %}
+                <li><a href="{{url}}">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-icon">
+            <a href="https://www.instagram.com/abadas_australia"><i class="bi bi-instagram"></i></a>
+            <a href="#facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#twitter"><i class="bi bi-twitter"></i></a>
+        </div>
+        <div class="footer-copyright">
+            <p>© 2025 <span> Abadas</span> | all rights reseved by <span>Abadas</span></p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{% static '/assets/js/script.js' %}"></script>
+</body>
+
+</html>

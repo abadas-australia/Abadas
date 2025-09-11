@@ -1,0 +1,61 @@
+{%load static %}
+
+<div id="search-panel" class="search-panel">
+    <div class="search-header">
+        <h4><svg width="25" height="25" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.5 21C15.7467 21 20 16.5228 20 11C20 5.47715 15.7467 1 10.5 1C5.25329 1 1 5.47715 1 11C1 16.5228 5.25329 21 10.5 21Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M26 27L18 19" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>What Are You Looking For?</h4>
+        <button id="search-close">✕</button>
+    </div>
+    
+    <div class="search-bar">
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Type to search..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    
+    <div class="search-content">
+        <h2>Our Products</h2>
+        <div class="search-category-container">
+            <div class="search-category-item">
+                <a href="{% url 'shop_category' 'ladies-collections' %}">
+                    <img src="{% static '/images/prod-1.JPG' %}">
+                    <div class="search-overlay">Ladies<br>Collections</div>
+                </a>
+            </div>
+            <div class="search-category-item">
+                <a href="{% url 'shop_category' 'men-collections' %}">
+                    <img src="{% static '/images/prod-2.JPG' %}">
+                    <div class="search-overlay">Men<br>Collections</div>
+                </a>
+            </div>
+            <div class="search-category-item">
+                <a href="{% url 'shop_category' 'kids-collections' %}">
+                    <img src="{% static '/images/prod-3.JPG' %}">
+                    <div class="search-overlay">Kids<br>Collections</div>
+                </a>
+            </div>
+            <div class="search-category-item">
+                <a href="{% url 'shop_category' 'exclusive-collections' %}">
+                    <img src="{% static '/images/prod-4.JPG' %}">
+                    <div class="search-overlay">Exclusive<br>Collections</div>
+                </a>
+            </div>
+            {% comment %} <div class="search-category-item">
+                <a href="{% url 'shop_category' 'head-wear' %}">
+                    <img src="{% static '/images/prod-5.JPG' %}">
+                    <div class="search-overlay">Head<br>Wear</div>
+                </a>
+            </div>
+            <div class="search-category-item">
+                <a href="{% url 'shop_category' 'baggy-shorts' %}">
+                    <img src="{% static '/images/prod-6.JPG' %}">
+                    <div class="search-overlay">Baggy<br>Shorts</div>
+                </a>
+            </div> {% endcomment %}
+        </div>
+    </div>
+    
+</div>

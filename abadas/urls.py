@@ -15,8 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from abadas import views
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from shop.views import checkout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index, name="index"),
+    path('about', views.aboutUs, name="about"),
+    path('contact', views.contactUs, name="contact"),
+    path('auth/', include("authentication.urls")),
+    path('shop/', include("shop.urls")),
+    path('checkout', checkout, name="checkout"),
+    path('developer/mohiul-islam-miraz', views.developer, name="developer")
 ]
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

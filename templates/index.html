@@ -1,0 +1,316 @@
+{% extends "base.html" %} 
+{% block title %} Abadas | Home {% endblock title %}
+{% block content %} 
+{% load static %}
+    
+    <section id="home">
+        <div class="home">
+            <div class="banner active">
+                <div class="banner-info">
+                    <h2>Chase your passion for fashion</h2>
+                    <h1>Discover Perfect Style<br> at Unbeatable Prices</h1>
+
+                    <div class="banner-image-tab">
+                        <img src="{% static '/images/banner-1.JPG' %}" alt="">
+                    </div>
+                    <div class="banner-image-info-tab">
+                        <h1>Distinct Collections</h1>
+                    </div>
+
+                    <a href="#category" class="banner-explore"><button>Explore now</button></a>
+                </div>
+                
+                <div class="banner-image">
+                    <img src="{% static '/images/banner-1.JPG' %}" alt="">
+                </div>
+                <div class="banner-image-info">
+                    <h1>Distinct<br> Collections</h1>
+                </div>
+            </div>
+            <div class="banner">
+                <div class="banner-info">
+                    <h2>Chase your passion for fashion</h2>
+                    <h1>Stay Ahead of the Trends<br>with Our New Collections</h1>
+
+                    <div class="banner-image-tab">
+                        <img src="{% static '/images/banner-2.JPG' %}" alt="">
+                    </div>
+                    <div class="banner-image-info-tab">
+                        <h1>Exclusive Selections</h1>
+                    </div>
+
+                    <a href="#category" class="banner-explore"><button>Explore now</button></a>
+                </div>
+                
+                <div class="banner-image">
+                    <img src="{% static '/images/banner-2.JPG' %}" alt="">
+                </div>
+                <div class="banner-image-info">
+                    <h1>Exclusive<br>Selections</h1>
+                </div>
+            </div>
+            <div class="banner">
+                <div class="banner-info">
+                    <h2>Chase your passion for fashion</h2>
+                    <h1>Elevate Your Wardrobe<br> with Trendy New trending</h1>
+
+                    <div class="banner-image-tab">
+                        <img src="{% static '/images/banner-3.JPG' %}" alt="">
+                    </div>
+                    <div class="banner-image-info-tab">
+                        <h1>Crafted Elegance</h1>
+                    </div>
+
+                    <a href="#category" class="banner-explore"><button>Explore now</button></a>
+                </div>
+                
+                <div class="banner-image">
+                    <img src="{% static '/images/banner-3.JPG' %}" alt="">
+                </div>
+                <div class="banner-image-info">
+                    <h1>Crafted<br>Elegance</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-mobile">
+            <div class="banner-mobile active">
+                <div class="banner-mobile-content">
+                    <h1>Discover Perfect Style<br> at Unbeatable Prices</h1>
+                    <h2>CHASE YOUR<br> PASSION</h2>
+                </div>
+                <div class="banner-mobile-image">
+                    <img src="{% static '/images/banner-mbl-1.png' %}" alt="Fashion Model">
+                </div>
+                <a href="#category" class="banner-mobile-button">Explore now</a>
+                <h3 class="banner-vertical-text">Distinct Collections</h3>
+            </div>
+            
+            <div class="banner-mobile">
+                <div class="banner-mobile-content">
+                    <h1>Stay Ahead of the Trends<br>with Our New Collections</h1>
+                    <h2>CHASE YOUR<br> PASSION</h2>
+                    
+                </div>
+                <div class="banner-mobile-image">
+                    <img src="{% static '/images/banner-mbl-2.png' %}" alt="Fashion Model">
+                </div>
+                <a href="#category" class="banner-mobile-button">Explore now</a>
+                <h3 class="banner-vertical-text">Exclusive Selections</h3>
+            </div>
+
+            <div class="banner-mobile">
+                <div class="banner-mobile-content">
+                    <h1>Elevate Your Wardrobe<br> with Trendy New trending</h1>
+                    <h2>CHASE YOUR<br> PASSION</h2>
+                </div>
+                <div class="banner-mobile-image">
+                    <img src="{% static '/images/banner-mbl-3.png' %}" alt="Fashion Model">
+                </div>
+                <a href="#category" class="banner-mobile-button">Explore now</a>
+                <h3 class="banner-vertical-text">Crafted Elegance</h3>
+            </div>
+        </div>
+    </section>
+
+    <section id="category">
+        <div class="category">
+            <div class="category-title">
+                <h3>Categories</h3>
+                <p>Explore our categories and exclusive new collections.</p>
+            </div>
+
+            <div class="category-items">
+                <div class="category-list">
+                    <a href="{% url 'shop_category' 'ladies-collections' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-1.JPG' %}" alt="">
+                        </div>
+                    
+                        <div class="category-info">
+                            <h3>Ladies Collections</h3>
+                            <p>{{ drop_shoulders_count }} Items</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="category-list">
+                    <a href="{% url 'shop_category' 'men-collections' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-2.JPG' %}" alt="">
+                        </div>
+                        <div class="category-info">
+                            <h3>Men Collections</h3>
+                            <p>{{baggy_joggers_count}} Items</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="category-list">
+                    <a href="{% url 'shop_category' 'kids-collections' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-3.JPG' %}" alt="">
+                        </div>
+                        <div class="category-info">
+                            <h3>Kids Collections</h3>
+                            <p>{{baggy_shirts_count}} Items</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="category-list">
+                    <a href="{% url 'shop_category' 'exclusive-collections' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-4.JPG' %}" alt="">
+                        </div>
+                        <div class="category-info">
+                            <h3>Exclusive Collections</h3>
+                            <p>{{cargo_pants_count}} Items</p>
+                        </div>
+                    </a>
+                </div>
+
+                {% comment %} <div class="category-list">
+                    <a href="{% url 'shop_category' 'head-wear' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-5.JPG' %}" alt="">
+                        </div>
+                        <div class="category-info">
+                            <h3>Head Wear</h3>
+                            <p>{{head_wear_count}} Items</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="category-list">
+                    <a href="{% url 'shop_category' 'baggy-shorts' %}">
+                        <div class="category-list-img">
+                            <img src="{% static '/images/prod-6.JPG' %}" alt="">
+                        </div>
+                        <div class="category-info">
+                            <h3>Baggy Shorts</h3>
+                            <p>{{baggy_shorts_count}} Items</p>
+                        </div>
+                    </a>
+                </div> {% endcomment %}
+            </div>
+        </div>
+    </section>
+
+    {% if latest_arrivals %}
+    <section id="arrivals">
+        <div class="arrivals-title">
+            <div class="arrivals-title-info">
+                <h3>Latest Arrivals</h3>
+                <p>Discover the latest trends with our newest collection.</p>
+            </div>
+        </div>
+        
+        <div class="arrivals swiper">
+            <div class="arrivals-wrapper">
+                <div class="arrivals-list swiper-wrapper">
+                    
+                    {% for product in latest_arrivals %}
+                    
+                    <div class="arrivals-product swiper-slide">
+                        
+                        <a href="/shop/product-details/{{ product.id }}/">
+
+                            <div class="arrivals-product-image">
+                                <img src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}">
+                            </div>
+
+                            <div class="arrivals-product-info">
+                                <h3>{{ product.product_name }}</h3>
+                                <p>${{ product.product_price }}</p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+
+                <div class="arrivals-slide-button swiper-button-prev"></div>
+                <div class="arrivals-slide-button swiper-button-next"></div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if trending_products|length == 6 %}
+    <section id="trending">
+        <div class="trending-title">
+            <h3>Trending Now</h3>
+            <p>Shop our most popular picks and standout styles.</p>
+        </div>
+
+        <div class="trending">
+            
+            <div class="trending-product">
+                {% for item in trending_products %}
+                {% if forloop.counter == 1 %}
+                <div class="trending-single">
+                    <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                    <div class="trending-overlay">
+                        <p>{{ item.product_name }}</p>
+                        <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                    </div>
+                </div>
+    
+                <div class="trending-double">
+                    {% elif forloop.counter == 2 %}
+                    <div class="trending-double-image">
+                        <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                        <div class="trending-overlay">
+                            <p>{{ item.product_name }}</p>
+                            <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                        </div>
+                    </div>
+                    {% elif forloop.counter == 3 %}
+                    <div class="trending-double-image">
+                        <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                        <div class="trending-overlay">
+                            <p>{{ item.product_name }}</p>
+                            <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trending-product">
+                {% elif forloop.counter == 4 %}
+                <div class="trending-single">
+                    <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                    <div class="trending-overlay">
+                        <p>{{ item.product_name }}</p>
+                        <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                    </div>
+                </div>
+    
+                <div class="trending-double">
+                    {% elif forloop.counter == 5 %}
+                    <div class="trending-double-image">
+                        <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                        <div class="trending-overlay">
+                            <p>{{ item.product_name }}</p>
+                            <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                        </div>
+                    </div>
+                    {% elif forloop.counter == 6 %}
+                    <div class="trending-double-image">
+                        <img src="{{ item.product_image_1.url }}" alt="{{ item.product_name }}">
+                        <div class="trending-overlay">
+                            <p>{{ item.product_name }}</p>
+                            <a href="/shop/product-details/{{ item.id }}/"><button>View Item</button></a>
+                        </div>
+                    </div>
+
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+{% endblock content %}
