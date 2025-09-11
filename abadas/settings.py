@@ -216,10 +216,10 @@ JAZZMIN_SETTINGS = {
     "site_title": "",
 
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "Wear Vault",
+    "site_header": "Abadas",
 
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "Wear Vault",
+    "site_brand": "Abadas",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
     # "site_logo": "/images/logo.png",
@@ -240,7 +240,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Admin",
 
     # Copyright on the footer
-    "copyright": "Wear Vault",
+    "copyright": "Abadas",
 
     # List of model admins to search from the search bar, search bar omitted if excluded
     # If you want to use a single search field you dont need to use a list, you can use a simple string 
