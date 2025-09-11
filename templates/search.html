@@ -19,42 +19,18 @@
     <div class="search-content">
         <h2>Our Products</h2>
         <div class="search-category-container">
+            {% for cat in global_categories %}
             <div class="search-category-item">
-                <a href="{% url 'shop_category' 'ladies-collections' %}">
+                <a href="{% url 'shop_category' cat.slug %}">
+                    {% if cat.image %}
+                    <img src="{{ cat.image.url }}">
+                    {% else %}
                     <img src="{% static '/images/prod-1.JPG' %}">
-                    <div class="search-overlay">Ladies<br>Collections</div>
+                    {% endif %}
+                    <div class="search-overlay">{{ cat.name|linebreaksbr }}</div>
                 </a>
             </div>
-            <div class="search-category-item">
-                <a href="{% url 'shop_category' 'men-collections' %}">
-                    <img src="{% static '/images/prod-2.JPG' %}">
-                    <div class="search-overlay">Men<br>Collections</div>
-                </a>
-            </div>
-            <div class="search-category-item">
-                <a href="{% url 'shop_category' 'kids-collections' %}">
-                    <img src="{% static '/images/prod-3.JPG' %}">
-                    <div class="search-overlay">Kids<br>Collections</div>
-                </a>
-            </div>
-            <div class="search-category-item">
-                <a href="{% url 'shop_category' 'exclusive-collections' %}">
-                    <img src="{% static '/images/prod-4.JPG' %}">
-                    <div class="search-overlay">Exclusive<br>Collections</div>
-                </a>
-            </div>
-            {% comment %} <div class="search-category-item">
-                <a href="{% url 'shop_category' 'head-wear' %}">
-                    <img src="{% static '/images/prod-5.JPG' %}">
-                    <div class="search-overlay">Head<br>Wear</div>
-                </a>
-            </div>
-            <div class="search-category-item">
-                <a href="{% url 'shop_category' 'baggy-shorts' %}">
-                    <img src="{% static '/images/prod-6.JPG' %}">
-                    <div class="search-overlay">Baggy<br>Shorts</div>
-                </a>
-            </div> {% endcomment %}
+            {% endfor %}
         </div>
     </div>
     

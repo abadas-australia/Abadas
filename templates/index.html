@@ -120,78 +120,24 @@
             </div>
 
             <div class="category-items">
+                {% for cat in global_categories %}
                 <div class="category-list">
-                    <a href="{% url 'shop_category' 'ladies-collections' %}">
+                    <a href="{% url 'shop_category' cat.slug %}">
                         <div class="category-list-img">
-                            <img src="{% static '/images/prod-1.JPG' %}" alt="">
+                            {% if cat.image %}
+                            <img src="{{ cat.image.url }}" alt="{{ cat.name }}">
+                            {% else %}
+                            <img src="{% static '/images/prod-1.JPG' %}" alt="{{ cat.name }}">
+                            {% endif %}
                         </div>
                     
                         <div class="category-info">
-                            <h3>Ladies Collections</h3>
-                            <p>{{ drop_shoulders_count }} Items</p>
+                            <h3>{{ cat.name }}</h3>
+                            <p>{{ cat.products.count }} Items</p>
                         </div>
                     </a>
                 </div>
-
-                <div class="category-list">
-                    <a href="{% url 'shop_category' 'men-collections' %}">
-                        <div class="category-list-img">
-                            <img src="{% static '/images/prod-2.JPG' %}" alt="">
-                        </div>
-                        <div class="category-info">
-                            <h3>Men Collections</h3>
-                            <p>{{baggy_joggers_count}} Items</p>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="category-list">
-                    <a href="{% url 'shop_category' 'kids-collections' %}">
-                        <div class="category-list-img">
-                            <img src="{% static '/images/prod-3.JPG' %}" alt="">
-                        </div>
-                        <div class="category-info">
-                            <h3>Kids Collections</h3>
-                            <p>{{baggy_shirts_count}} Items</p>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="category-list">
-                    <a href="{% url 'shop_category' 'exclusive-collections' %}">
-                        <div class="category-list-img">
-                            <img src="{% static '/images/prod-4.JPG' %}" alt="">
-                        </div>
-                        <div class="category-info">
-                            <h3>Exclusive Collections</h3>
-                            <p>{{cargo_pants_count}} Items</p>
-                        </div>
-                    </a>
-                </div>
-
-                {% comment %} <div class="category-list">
-                    <a href="{% url 'shop_category' 'head-wear' %}">
-                        <div class="category-list-img">
-                            <img src="{% static '/images/prod-5.JPG' %}" alt="">
-                        </div>
-                        <div class="category-info">
-                            <h3>Head Wear</h3>
-                            <p>{{head_wear_count}} Items</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="category-list">
-                    <a href="{% url 'shop_category' 'baggy-shorts' %}">
-                        <div class="category-list-img">
-                            <img src="{% static '/images/prod-6.JPG' %}" alt="">
-                        </div>
-                        <div class="category-info">
-                            <h3>Baggy Shorts</h3>
-                            <p>{{baggy_shorts_count}} Items</p>
-                        </div>
-                    </a>
-                </div> {% endcomment %}
+                {% endfor %}
             </div>
         </div>
     </section>

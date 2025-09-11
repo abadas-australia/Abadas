@@ -7,16 +7,20 @@ from django.core.files.base import ContentFile
 
 # Create your models here.
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True)
+    image = models.ImageField(upload_to='category-images/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class product(models.Model):
-    CATEGORY_CHOICES = [
-        ('drop-shoulders', 'Drop Shoulders'),
-        ('baggy-joggers', 'Baggy Joggers'),
-        ('baggy-shirts', 'Baggy Shirts'),
-        ('cargo-pants', 'Cargo Pants'),
-        ('head-wear', 'Head Wear'),
-        ('baggy-shorts', 'Baggy Shorts'),
-    ]
-    
     LATEST_ARRIVAL_CHOICES = [
         ('yes', 'Yes'),
         ('no', 'No'),
@@ -24,7 +28,7 @@ class product(models.Model):
 
     product_id = models.AutoField
     product_name = models.CharField(max_length=100)
-    product_category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='drop-shoulders')
+    product_category = models.ForeignKey(Category, related_name='products', on_delete=models.PROTECT, null=True, blank=True)
     product_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     product_desc = models.TextField()
     product_color = models.TextField()

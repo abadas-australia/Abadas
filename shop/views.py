@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from shop.models import product, order
+from shop.models import product, order, Category
 from math import ceil
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -14,7 +14,13 @@ def shop(request, category=None):
     allProds = []
 
     if category:
-        prod = product.objects.filter(product_category=category)
+        category_obj = Category.objects.filter(slug=category, is_active=True).first()
+        if not category_obj:
+            cat = category.replace("-", " ").title()
+            return render(request, "shop.html", {
+                'message': f"No products available in the '{cat}' category. Please check back later!"
+            })
+        prod = product.objects.filter(product_category=category_obj)
         if prod.exists():
             n = len(prod)
             nSlides = n // 4 + ceil((n / 4) - (n // 4))
@@ -25,9 +31,8 @@ def shop(request, category=None):
                 'message': f"No products available in the '{cat}' category. Please check back later!"
             })
     else:
-        catprods = product.objects.values('product_category', 'id')
-        cats = {item['product_category'] for item in catprods}
-        for cat in cats:
+        categories = Category.objects.filter(is_active=True)
+        for cat in categories:
             prod = product.objects.filter(product_category=cat)
             n = len(prod)
             nSlides = n // 4 + ceil((n / 4) - (n // 4))

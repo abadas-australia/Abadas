@@ -12,13 +12,13 @@ def index(request, category=None):
     search_query = request.GET.get('search', '')
     data = {}
 
-    # Counts for each category
-    drop_shoulders_count = product.objects.filter(product_category='drop-shoulders').count()
-    baggy_joggers_count = product.objects.filter(product_category='baggy-joggers').count()
-    baggy_shirts_count = product.objects.filter(product_category='baggy-shirts').count()
-    cargo_pants_count = product.objects.filter(product_category='cargo-pants').count()
-    head_wear_count = product.objects.filter(product_category='head-wear').count()
-    baggy_shorts_count = product.objects.filter(product_category='baggy-shorts').count()
+    # Counts for each category (by slug via ForeignKey)
+    drop_shoulders_count = product.objects.filter(product_category__slug='drop-shoulders').count()
+    baggy_joggers_count = product.objects.filter(product_category__slug='baggy-joggers').count()
+    baggy_shirts_count = product.objects.filter(product_category__slug='baggy-shirts').count()
+    cargo_pants_count = product.objects.filter(product_category__slug='cargo-pants').count()
+    head_wear_count = product.objects.filter(product_category__slug='head-wear').count()
+    baggy_shorts_count = product.objects.filter(product_category__slug='baggy-shorts').count()
 
     # Latest arrivals
     latest_arrivals = product.objects.filter(latest_arrival='yes')

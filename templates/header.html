@@ -54,10 +54,9 @@
                             <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg></a>
                         <ul>
-                            <li><a href="{% url 'shop_category' 'ladies-collections' %}">Ladies Collections</a></li>
-                            <li><a href="{% url 'shop_category' 'men-collections' %}">Men Collections</a></li>
-                            <li><a href="{% url 'shop_category' 'kids-collections' %}">Kids Collections</a></li>
-                            <li><a href="{% url 'shop_category' 'exclusive-collections' %}">Exclusive Collections</a></li>
+                            {% for cat in global_categories %}
+                            <li><a href="{% url 'shop_category' cat.slug %}">{{ cat.name }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                     {% url 'about' as url %}
@@ -172,10 +171,9 @@
                         <li><a class="{% if request.path == url %} active {% endif %}" href="{{url}}">About Us</a></li>
                         {% url 'contact' as url %}
                         <li><a class="{% if request.path == url %} active {% endif %}" href="{{url}}">Contact Us</a></li>
-                        <li><a href="{% url 'shop_category' 'ladies-collections' %}">Ladies Collections</a></li>
-                        <li><a href="{% url 'shop_category' 'men-collections' %}">Men Collections</a></li>
-                        <li><a href="{% url 'shop_category' 'kids-collections' %}">Kids Collections</a></li>
-                        <li><a href="{% url 'shop_category' 'exclusive-collections' %}">Exclusive Collections</a></li>
+                        {% for cat in global_categories %}
+                        <li><a href="{% url 'shop_category' cat.slug %}">{{ cat.name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
