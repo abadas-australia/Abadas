@@ -133,6 +133,17 @@ def checkout(request):
             else:
                 messages.error(request, f"Your cart is empty. Please add items to the cart before placing the order.")
                 return redirect('/shop/')
+        elif payment_method == 'payid':
+            # Customer pays externally and uploads proof
+            uploaded = request.FILES.get('payid_proof')
+            if uploaded:
+                order_instance.payid_proof = uploaded
+            order_instance.paymentstatus = "PayID Pending"
+            order_instance.save()
+
+            send_order_placed_email(order_instance)
+            messages.success(request, "Your order has been placed. We'll review your PayID proof shortly.")
+            return render(request, 'payment_success.html')
     
 
     context = {

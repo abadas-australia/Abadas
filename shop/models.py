@@ -77,6 +77,7 @@ class order(models.Model):
     amountpaid=models.CharField(max_length=500,blank=True,null=True)
     paymentstatus=models.CharField(max_length=20,blank=True)
     phone = models.CharField(max_length=100,default="")
+    payid_proof = models.ImageField(upload_to='payment-proofs/', blank=True, null=True)
     STATUS_CHOICES = [
         ("PLACED", "Placed"),
         ("CONFIRMED", "Confirmed"),

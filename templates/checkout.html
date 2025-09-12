@@ -28,7 +28,7 @@
             </div>
             <div class="checkout-form">
                 <h2>Step 2 - Enter Address & Other Details:</h2>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <input type="hidden" name="itemsJson" id="itemsJson">
@@ -110,6 +110,30 @@
                         
                             <!-- PayPal Buttons -->
                             <div id="paypal-button-container"></div>
+
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="payid" required>
+                                <div class="payment-content">
+                                    <span>Pay ID</span>
+                                </div>
+                            </label>
+
+                            <div id="payid-section" style="display:none;">
+                                <div class="payid-info" style="background:#f7f7f7;border:1px solid #e2e2e2;border-radius:6px;padding:12px;margin:10px 0;">
+                                    <p>Please send the payment to the PAY ID listed below:</p>
+                                    <p><strong>Account Name:</strong> A. Bushra<br>
+                                    <strong>PayID:</strong> 0432078656 </p>
+                                    <p>To confirm your payment, upload a screenshot of your transfer receipt after placing the order.</p>
+                                    <p>If you have trouble, contact us via Facebook or email.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payid_proof">Upload payment screenshot</label>
+                                    <input type="file" id="payid_proof" name="payid_proof" accept="image/*">
+                                </div>
+                                <div class="payid-button d-flex justify-content-center">
+                                    <button id="btn-payid-submit" type="submit" class="" style="display:none;">Place Order</button>
+                                </div>
+                            </div>
                             
                         </div>
                     </div>
@@ -126,6 +150,7 @@
 
         const paypalRadio = document.querySelector('input[value="paypal"]');
         const cardRadio = document.querySelector('input[value="card"]');
+        const payidRadio = document.querySelector('input[value="payid"]');
         
 
         // Disable the PayPal button initially
@@ -140,6 +165,13 @@
         paypalpay.style.opacity = "0.5";
         paypalpay.style.display = "none";
 
+        const payidSection = document.getElementById('payid-section');
+        const payidBtn = document.getElementById('btn-payid-submit');
+        if (payidBtn) {
+            payidBtn.style.pointerEvents = "none";
+            payidBtn.style.opacity = "0.5";
+            payidBtn.style.display = "none";
+        }
 
         // Form validation function
         function validateForm() {
@@ -165,6 +197,8 @@
                         paypalButtonContainer.style.opacity = "1";
                         paypalButtonContainer.style.display = "block";
                         paypalpay.style.display = "none";
+                        payidSection.style.display = "none";
+                        if (payidBtn) payidBtn.style.display = "none";
                     }
 
                     if (paypalRadio.checked) {
@@ -172,6 +206,19 @@
                         paypalpay.style.opacity = "1";
                         paypalpay.style.display = "block";
                         paypalButtonContainer.style.display = "none";
+                        payidSection.style.display = "none";
+                        if (payidBtn) payidBtn.style.display = "none";
+                    }
+                    
+                    if (payidRadio && payidRadio.checked) {
+                        payidSection.style.display = "block";
+                        paypalButtonContainer.style.display = "none";
+                        paypalpay.style.display = "none";
+                        if (payidBtn) {
+                            payidBtn.style.pointerEvents = "auto";
+                            payidBtn.style.opacity = "1";
+                            payidBtn.style.display = "inline-block";
+                        }
                     }
                         
                 } else {
@@ -180,6 +227,10 @@
 
                     paypalpay.style.pointerEvents = "none";
                     paypalpay.style.opacity = "0.5";
+                    if (payidBtn) {
+                        payidBtn.style.pointerEvents = "none";
+                        payidBtn.style.opacity = "0.5";
+                    }
                 }
             });
         });

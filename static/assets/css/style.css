@@ -1604,6 +1604,25 @@ select option {
     width: 350px;
 }
 
+.checkout #payid-section button{
+    background-color: #096eb6;
+    color: #ffffff;
+    border: none;
+    border-radius: 9999px;
+    padding: 14px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    width: 100%;
+    max-width: 200px;
+    cursor: pointer;
+    transition: transform 40ms ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 6px 14px rgba(9, 110, 182, 0.35);
+}
+.checkout #payid-section button:hover { filter: brightness(0.96); }
+.checkout #payid-section button:active { transform: translateY(1px); }
+.checkout #payid-section button[disabled] { opacity: .6; cursor: not-allowed; }
+
 
 /*----------------------------------------- payment confirmation -----------------------------------------*/
 

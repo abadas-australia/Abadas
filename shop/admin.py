@@ -14,7 +14,7 @@ admin.site.register(product)
 
 class orderAdmin(admin.ModelAdmin):
     list_display = ('email', 'status', 'formatted_items', 'confirm_action', 'reject_action')
-    readonly_fields = ('formatted_items',)
+    readonly_fields = ('formatted_items', 'payid_proof_preview')
 
     def get_urls(self):
         from django.urls import path
@@ -38,6 +38,17 @@ class orderAdmin(admin.ModelAdmin):
             return format_html('<a class="button" href="{}" style="color:#c00;">Reject</a>', url)
         return '—'
     reject_action.short_description = 'Reject'
+
+    def payid_proof_thumb(self, obj):
+        if getattr(obj, 'payid_proof', None):
+            return format_html('<img src="{}" style="height:48px;width:auto;border-radius:4px;"/>', obj.payid_proof.url)
+        return '—'
+    payid_proof_thumb.short_description = 'PayID Proof'
+
+    def payid_proof_preview(self, obj):
+        if getattr(obj, 'payid_proof', None):
+            return format_html('<a href="{0}" target="_blank"><img src="{0}" style="max-height:300px;width:auto;border:1px solid #ddd;border-radius:6px;"/></a>', obj.payid_proof.url)
+        return 'No proof uploaded'
 
     def process_confirm(self, request, order_id, *args, **kwargs):
         try:
