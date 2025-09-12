@@ -1,34 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Order Placed</title>
+    <title>Order Confirmed</title>
 </head>
 <body style="font-family: Arial, sans-serif; color: #333333; margin: 0; padding: 0; background-color: #f4f4f4;">
     <div style="width: 100%; max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; overflow: hidden;">
-        
         <div style="background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;">
-            <h2 style="margin: 0;">Order Placed</h2>
+            <h2 style="margin: 0;">Order Confirmed</h2>
         </div>
-        
         <div style="padding: 20px;">
             <h2 style="font-size: 1.5em; color: #333333;">Hi {{ customer_name }},</h2>
-            <p>Your order has been placed successfully! Our team will review it shortly. Once it is confirmed, you will receive a confirmation email.</p>
-            
+            <p>Your order has been confirmed and is now being prepared.</p>
             <p><strong>Order ID:</strong> {{ order_id }}</p>
             <p><strong>Total Amount:</strong> ${{ amount }}</p>
             <p><strong>Payment Status:</strong> {{ payment_status }}</p>
-            
             <h3 style="border-bottom: 1px solid #dddddd; padding-bottom: 5px; color: #4CAF50;">Order Details:</h3>
             <div style="margin-top: 10px;">{{ order_items|safe }}</div>
-            
-            <p style="margin-top: 20px;">If you have any questions, feel free to contact us.</p>
         </div>
-        
         <div style="background-color: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #dddddd;">
             <p style="margin: 0;">Thank you for shopping with us!</p>
             <p style="margin: 0;">Visit our website: <a href="https://abadas.vercel.app" style="color: #4CAF50; text-decoration: none;">Click here</a></p>
         </div>
-        
     </div>
 </body>
 </html>
+

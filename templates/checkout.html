@@ -196,6 +196,9 @@
                 }
 
                 return actions.order.create({
+                    application_context: {
+                        shipping_preference: 'NO_SHIPPING'
+                    },
                     purchase_units: [{
                         amount: {
                             value: document.getElementById('amt').value, // Total amount from the form

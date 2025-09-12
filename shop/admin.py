@@ -1,12 +1,91 @@
 from django.contrib import admin
 from shop.models import product, order, orderUpdate, Category
+from django.utils.html import format_html
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.conf import settings
 
 admin.site.register(product)
 # admin.site.register(orderUpdate)
 
 class orderAdmin(admin.ModelAdmin):
-    list_display = ('email', 'formatted_items')
+    list_display = ('email', 'status', 'formatted_items', 'confirm_action', 'reject_action')
     readonly_fields = ('formatted_items',)
+
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:order_id>/confirm/', self.admin_site.admin_view(self.process_confirm), name='shop_order_confirm'),
+            path('<int:order_id>/reject/', self.admin_site.admin_view(self.process_reject), name='shop_order_reject'),
+        ]
+        return custom_urls + urls
+
+    def confirm_action(self, obj):
+        if obj.status != 'CONFIRMED':
+            url = reverse('admin:shop_order_confirm', args=[obj.order_id])
+            return format_html('<a class="button" href="{}">Confirm</a>', url)
+        return '—'
+    confirm_action.short_description = 'Confirm'
+
+    def reject_action(self, obj):
+        if obj.status != 'REJECTED':
+            url = reverse('admin:shop_order_reject', args=[obj.order_id])
+            return format_html('<a class="button" href="{}" style="color:#c00;">Reject</a>', url)
+        return '—'
+    reject_action.short_description = 'Reject'
+
+    def process_confirm(self, request, order_id, *args, **kwargs):
+        try:
+            obj = order.objects.get(order_id=order_id)
+            obj.status = 'CONFIRMED'
+            obj.save(update_fields=['status'])
+            self._send_order_confirmed_email(obj)
+            self.message_user(request, f"Order #{order_id} confirmed and email sent.", level=messages.SUCCESS)
+        except order.DoesNotExist:
+            self.message_user(request, f"Order #{order_id} not found.", level=messages.ERROR)
+        return redirect(request.META.get('HTTP_REFERER', reverse('admin:shop_order_changelist')))
+
+    def process_reject(self, request, order_id, *args, **kwargs):
+        try:
+            obj = order.objects.get(order_id=order_id)
+            obj.status = 'REJECTED'
+            obj.save(update_fields=['status'])
+            self._send_order_rejected_email(obj)
+            self.message_user(request, f"Order #{order_id} rejected and email sent.", level=messages.WARNING)
+        except order.DoesNotExist:
+            self.message_user(request, f"Order #{order_id} not found.", level=messages.ERROR)
+        return redirect(request.META.get('HTTP_REFERER', reverse('admin:shop_order_changelist')))
+
+    def _send_order_confirmed_email(self, order_instance):
+        subject = "Order Confirmed"
+        message = render_to_string('order-confirmed-email.html', {
+            'customer_name': order_instance.name,
+            'order_id': order_instance.order_id,
+            'amount': order_instance.amount,
+            'payment_status': order_instance.paymentstatus,
+            'order_items': order_instance.formatted_items(),
+        })
+        email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [order_instance.email])
+        email.content_subtype = "html"
+        email.send()
+
+    def _send_order_rejected_email(self, order_instance):
+        subject = "Order Rejected"
+        message = render_to_string('order-rejected-email.html', {
+            'customer_name': order_instance.name,
+            'order_id': order_instance.order_id,
+            'amount': order_instance.amount,
+            'payment_status': order_instance.paymentstatus,
+            'order_items': order_instance.formatted_items(),
+        })
+        email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [order_instance.email])
+        email.content_subtype = "html"
+        email.send()
 
 admin.site.register(order, orderAdmin)
 

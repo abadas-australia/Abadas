@@ -77,6 +77,12 @@ class order(models.Model):
     amountpaid=models.CharField(max_length=500,blank=True,null=True)
     paymentstatus=models.CharField(max_length=20,blank=True)
     phone = models.CharField(max_length=100,default="")
+    STATUS_CHOICES = [
+        ("PLACED", "Placed"),
+        ("CONFIRMED", "Confirmed"),
+        ("REJECTED", "Rejected"),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PLACED")
 
     def formatted_items(self):
         try:

@@ -164,7 +164,7 @@ def payment_success(request):
                 order_instance.save()
 
 
-                send_order_confirmation_email(order_instance)
+                send_order_placed_email(order_instance)
                 return render(request, 'payment_success.html')
 
         except Exception as e:
@@ -205,7 +205,7 @@ def payment_success(request):
                 phone=phone,
             )
             new_order.save()
-            send_order_confirmation_email(new_order)
+            send_order_placed_email(new_order)
 
             return render(request, 'payment_success.html', {'order': new_order})
 
@@ -213,25 +213,18 @@ def payment_success(request):
             return render(request, 'payment_success.html', {'order': new_order})
 
 
-
-def send_order_confirmation_email(order_instance):
-    recipient_email_subject = "Order Confirmation"
-    recipient_message = render_to_string('order-confirmation-email.html', {
+def send_order_placed_email(order_instance):
+    subject = "Order Placed"
+    message = render_to_string('order-confirmation-email.html', {
         'customer_name': order_instance.name,
         'order_id': order_instance.order_id,
         'amount': order_instance.amount,
         'payment_status': order_instance.paymentstatus,
         'order_items': order_instance.formatted_items(),
     })
-
-    recipient_email_message = EmailMessage(
-        recipient_email_subject,
-        recipient_message,
-        settings.EMAIL_HOST_USER,
-        [order_instance.email]
-    )
-    recipient_email_message.content_subtype = "html"
-    recipient_email_message.send()
+    email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [order_instance.email])
+    email.content_subtype = "html"
+    email.send()
 
 
 def payment_cancel(request):
