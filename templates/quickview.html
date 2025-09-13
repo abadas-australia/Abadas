@@ -48,17 +48,25 @@
             </div>
 
             <div class="quick-view-info-cart">
-                <div class="quick-view-info-cart-quantity">
-                    <button id="decreasepr{{product.id}}" class="quick-view-info-cart-quantity-button"><span>-</span></button>
-                    <input type="number" class="quantity" id="quantitypr{{product.id}}" value="1" min="1">
-                    <button id="increasepr{{product.id}}" class="quick-view-info-cart-quantity-button"><span>+</span></button>
-                </div>
-                
-                <div id="divpr{{product.id}}" class="divpr">
-                    <button id="pr{{product.id}}" class="cart">
-                      ADD TO CART <i class="fa-solid fa-cart-shopping"></i>
-                    </button>
-                </div>
+                {% if product.stock_status == 'out_of_stock' %}
+                        <div id="divpr{{product.id}}" class="divpr">
+                            <button id="pr{{product.id}}" class="cart" disabled style="background-color: #6c757d; cursor: not-allowed;">
+                              OUT OF STOCK <i class="fa-solid fa-ban"></i>
+                            </button>
+                        </div>
+                {% else %}
+                    <div class="quick-view-info-cart-quantity">
+                        <button id="decreasepr{{product.id}}" class="quick-view-info-cart-quantity-button"><span>-</span></button>
+                        <input type="number" class="quantity" id="quantitypr{{product.id}}" value="1" min="1">
+                        <button id="increasepr{{product.id}}" class="quick-view-info-cart-quantity-button"><span>+</span></button>
+                    </div>
+                    
+                    <div id="divpr{{product.id}}" class="divpr">
+                        <button id="pr{{product.id}}" class="cart">
+                          ADD TO CART <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
+                    </div>
+                {% endif %}
             </div>
 
             <p class="quick-view-info-features">Product Id: <span>{{ product.id }}</span></p>

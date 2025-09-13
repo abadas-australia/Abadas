@@ -313,6 +313,12 @@ document.addEventListener("DOMContentLoaded", function (){
             if (event.target.classList.contains('cart')) {
                 let idstr = event.target.id.toString();
 
+                // Check if the button is disabled (out of stock)
+                if (event.target.disabled) {
+                    alert("This product is currently out of stock.");
+                    return;
+                }
+
                 // Get selected color and size
                 let color = document.getElementById('color').value;
                 let size = document.getElementById('size').value;

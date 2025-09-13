@@ -27,6 +27,11 @@ class product(models.Model):
         ('yes', 'Yes'),
         ('no', 'No'),
     ]
+    
+    STOCK_STATUS_CHOICES = [
+        ('in_stock', 'In Stock'),
+        ('out_of_stock', 'Out of Stock'),
+    ]
 
     product_id = models.AutoField
     product_name = models.CharField(max_length=100)
@@ -41,6 +46,7 @@ class product(models.Model):
     product_image_4 = models.ImageField(upload_to='product-images/')
     product_image_5 = models.ImageField(upload_to='product-images/')
     latest_arrival = models.CharField(max_length=3, choices=LATEST_ARRIVAL_CHOICES, default='no')
+    stock_status = models.CharField(max_length=20, choices=STOCK_STATUS_CHOICES, default='in_stock')
 
     def save(self, *args, **kwargs):
         for image_field in ['product_image_1', 'product_image_2', 'product_image_3', 'product_image_4', 'product_image_5']:

@@ -9,7 +9,24 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 
-admin.site.register(product)
+@admin.register(product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('product_name', 'product_category', 'product_price', 'stock_status', 'latest_arrival')
+    list_filter = ('product_category', 'stock_status', 'latest_arrival')
+    search_fields = ('product_name', 'product_desc')
+    list_editable = ('stock_status',)
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('product_name', 'product_category', 'product_price', 'product_desc')
+        }),
+        ('Product Details', {
+            'fields': ('product_color', 'product_size', 'stock_status', 'latest_arrival')
+        }),
+        ('Images', {
+            'fields': ('product_image_1', 'product_image_2', 'product_image_3', 'product_image_4', 'product_image_5')
+        }),
+    )
+
 # admin.site.register(orderUpdate)
 
 class orderAdmin(admin.ModelAdmin):
