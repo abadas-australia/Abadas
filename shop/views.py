@@ -58,11 +58,6 @@ def productDetails(request, id):
 
 
 def checkout(request):
-    if not request.user.is_authenticated:
-        messages.warning(request, "Login & Try Again")
-        return redirect('/')
-    
-
     if request.method == "POST":
         # Common data
         items_json = request.POST.get('itemsJson', '')
@@ -90,6 +85,8 @@ def checkout(request):
             state=state,
             zip_code=zip_code,
             phone=phone,
+            user=request.user if request.user.is_authenticated else None,
+            is_guest_order=not request.user.is_authenticated,
         )
         request.session['order_id'] = order_instance.order_id
 
@@ -214,6 +211,8 @@ def payment_success(request):
                 amountpaid=amount_paid,  # Save amount paid
                 paymentstatus="Success",
                 phone=phone,
+                user=request.user if request.user.is_authenticated else None,
+                is_guest_order=not request.user.is_authenticated,
             )
             new_order.save()
             send_order_placed_email(new_order)

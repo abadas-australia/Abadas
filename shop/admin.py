@@ -13,8 +13,10 @@ admin.site.register(product)
 # admin.site.register(orderUpdate)
 
 class orderAdmin(admin.ModelAdmin):
-    list_display = ('email', 'status', 'formatted_items', 'confirm_action', 'reject_action')
+    list_display = ('email', 'name', 'status', 'formatted_items', 'confirm_action', 'reject_action')
     readonly_fields = ('formatted_items', 'payid_proof_preview')
+    list_filter = ('is_guest_order', 'status', 'paymentstatus')
+    search_fields = ('email', 'name', 'order_id')
 
     def get_urls(self):
         from django.urls import path

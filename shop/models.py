@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
+from django.contrib.auth.models import User
 import json
 from PIL import Image
 from io import BytesIO
@@ -78,6 +79,8 @@ class order(models.Model):
     paymentstatus=models.CharField(max_length=20,blank=True)
     phone = models.CharField(max_length=100,default="")
     payid_proof = models.ImageField(upload_to='payment-proofs/', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, help_text="User who placed the order (null for guest orders)")
+    is_guest_order = models.BooleanField(default=False, help_text="True if this is a guest order")
     STATUS_CHOICES = [
         ("PLACED", "Placed"),
         ("CONFIRMED", "Confirmed"),
