@@ -135,10 +135,11 @@ def checkout(request):
             uploaded = request.FILES.get('payid_proof')
             if uploaded:
                 order_instance.payid_proof = uploaded
-            order_instance.paymentstatus = "PayID Pending"
+            order_instance.paymentstatus = "PayID"
             order_instance.save()
 
             send_order_placed_email(order_instance)
+            send_admin_order_notification(order_instance)
             messages.success(request, "Your order has been placed. We'll review your PayID proof shortly.")
             return render(request, 'payment_success.html')
     
@@ -173,6 +174,7 @@ def payment_success(request):
 
 
                 send_order_placed_email(order_instance)
+                send_admin_order_notification(order_instance)
                 return render(request, 'payment_success.html')
 
         except Exception as e:
@@ -216,6 +218,7 @@ def payment_success(request):
             )
             new_order.save()
             send_order_placed_email(new_order)
+            send_admin_order_notification(new_order)
 
             return render(request, 'payment_success.html', {'order': new_order})
 
@@ -233,6 +236,46 @@ def send_order_placed_email(order_instance):
         'order_items': order_instance.formatted_items(),
     })
     email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [order_instance.email])
+    email.content_subtype = "html"
+    email.send()
+
+
+def send_admin_order_notification(order_instance):
+    """Send email notification to admin when a new order is placed"""
+    admin_email = "abadasaustralia@gmail.com"
+    
+    # Get payment proof URL if it exists
+    payment_proof_url = None
+    if order_instance.payid_proof:
+        payment_proof_url = order_instance.payid_proof.url
+    
+    # Determine user type
+    user_type = "Registered User" if order_instance.user else "Guest User"
+    
+    # Get order date
+    from django.utils import timezone
+    
+    subject = f"New Order Notification - Order #{order_instance.order_id}"
+    message = render_to_string('admin-order-notification-email.html', {
+        'order_id': order_instance.order_id,
+        'amount': order_instance.amount,
+        'payment_status': order_instance.paymentstatus or "Pending",
+        'order_status': order_instance.status,
+        'customer_name': order_instance.name,
+        'customer_email': order_instance.email,
+        'customer_phone': order_instance.phone,
+        'user_type': user_type,
+        'address1': order_instance.address1,
+        'address2': order_instance.address2,
+        'city': order_instance.city,
+        'state': order_instance.state,
+        'zip_code': order_instance.zip_code,
+        'order_items': order_instance.formatted_items(),
+        'payment_proof_url': payment_proof_url,
+        'admin_url': f"https://abadas.vercel.app/abadas-admin/shop/order/{order_instance.order_id}/change/",
+    })
+    
+    email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [admin_email])
     email.content_subtype = "html"
     email.send()
 

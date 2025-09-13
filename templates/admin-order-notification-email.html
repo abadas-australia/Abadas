@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Order Notification - Admin</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333333; margin: 0; padding: 0; background-color: #f4f4f4;">
+    <div style="width: 100%; max-width: 700px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; overflow: hidden;">
+        
+        <div style="background-color: #FF6B35; color: #ffffff; padding: 20px; text-align: center;">
+            <h2 style="margin: 0;">🛒 New Order Notification</h2>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">Order #{{ order_id }} - Action Required</p>
+        </div>
+        
+        <div style="padding: 20px;">
+            <h2 style="font-size: 1.5em; color: #333333; margin-top: 0;">New Order Received!</h2>
+            <p>A new order has been placed and requires your attention.</p>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <h3 style="margin-top: 0; color: #FF6B35; border-bottom: 1px solid #dddddd; padding-bottom: 5px;">Order Information</h3>
+                <p><strong>Order ID:</strong> {{ order_id }}</p>
+                <p><strong>Total Amount:</strong> ${{ amount }}</p>
+                <p><strong>Payment Status:</strong> {{ payment_status }}</p>
+                <p><strong>Order Status:</strong> {{ order_status }}</p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <h3 style="margin-top: 0; color: #FF6B35; border-bottom: 1px solid #dddddd; padding-bottom: 5px;">Customer Information</h3>
+                <p><strong>Name:</strong> {{ customer_name }}</p>
+                <p><strong>Email:</strong> {{ customer_email }}</p>
+                <p><strong>Phone:</strong> {{ customer_phone }}</p>
+                <p><strong>User Type:</strong> {{ user_type }}</p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <h3 style="margin-top: 0; color: #FF6B35; border-bottom: 1px solid #dddddd; padding-bottom: 5px;">Shipping Address</h3>
+                <p><strong>Address 1:</strong> {{ address1 }}</p>
+                <p><strong>Address 2:</strong> {{ address2 }}</p>
+                <p><strong>City:</strong> {{ city }}</p>
+                <p><strong>State:</strong> {{ state }}</p>
+                <p><strong>ZIP Code:</strong> {{ zip_code }}</p>
+            </div>
+            
+            <h3 style="border-bottom: 1px solid #dddddd; padding-bottom: 5px; color: #FF6B35;">Order Items:</h3>
+            <div style="margin-top: 10px;">{{ order_items|safe }}</div>
+            
+            {% if payment_proof_url %}
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                <h3 style="margin-top: 0; color: #856404;">Payment Proof</h3>
+                <p>This order includes a payment proof that needs to be verified.</p>
+                <p><strong>Payment Proof:</strong> <a href="{{ payment_proof_url }}" style="color: #FF6B35;">View Payment Proof</a></p>
+            </div>
+            {% endif %}
+            
+            <div style="background-color: #d1ecf1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #17a2b8;">
+                <h3 style="margin-top: 0; color: #0c5460;">Next Steps</h3>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Review the order details and customer information</li>
+                    <li>Verify payment status and proof (if applicable)</li>
+                    <li>Update order status in the admin panel</li>
+                    <li>Process and fulfill the order</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 20px; text-align: center;">
+                <a href="{{ admin_url }}" style="background-color: #FF6B35; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">View Order in Admin Panel</a>
+            </p>
+        </div>
+        
+        <div style="background-color: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #dddddd;">
+            <p style="margin: 0; font-size: 12px; color: #666666;">This is an automated notification from Abadas E-commerce System</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #666666;">Please do not reply to this email</p>
+        </div>
+        
+    </div>
+</body>
+</html>
