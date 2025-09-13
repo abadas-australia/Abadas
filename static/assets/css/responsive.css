@@ -33,8 +33,12 @@ body header {
 }
 
 header .nav-logo img{
-    width: 70px;
+    width: 42px;
     height: 30px;
+}
+
+header .nav-logo h1{
+    font-size: 18px;
 }
 
 header nav .nav-menu-icon{
@@ -199,7 +203,7 @@ header nav .nav-menu-bar a svg:hover{
 
 .banner-mobile .banner-mobile-content h2{
     color: #fff;
-    font-size: 35px;
+    font-size: 32px;
     font-weight: 300;
     margin-top: 10%;
     line-height: 60px;
@@ -407,7 +411,7 @@ header nav .nav-menu-bar a svg:hover{
 
 .footer-logo img{
     width: 70px;
-    height: 30px;
+    height: 50px;
     margin: 10px;
 }
 
