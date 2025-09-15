@@ -258,7 +258,8 @@ document.addEventListener("DOMContentLoaded", function (){
                 itemsContainer.appendChild(listItem);
             }
         }
-        document.getElementById('totalprice').textContent = `$${totalPrice.toFixed(2)}`;
+        var subtotalEl = document.getElementById('cart-subtotal');
+        if (subtotalEl) subtotalEl.textContent = `$${totalPrice.toFixed(2)}`;
     }
     
     if (itemsJson) {
@@ -271,7 +272,17 @@ document.addEventListener("DOMContentLoaded", function (){
         // document.location = "/";
     }
     
-    document.getElementById("amt").value = totalPrice;
+    window.__checkoutSubtotal = totalPrice;
+    var amountHidden = document.getElementById("amt");
+    if (amountHidden) {
+        var shippingSelected = document.querySelector('input[name="shipping_method"]:checked');
+        var shipCost = shippingSelected ? parseFloat(shippingSelected.getAttribute('data-cost')) : 0;
+        document.getElementById('shipping-cost-display') && (document.getElementById('shipping-cost-display').textContent = `$${shipCost.toFixed(2)}`);
+        document.getElementById('grand-total') && (document.getElementById('grand-total').textContent = `$${(totalPrice + shipCost).toFixed(2)}`);
+        document.getElementById('shipping_method_input') && (document.getElementById('shipping_method_input').value = shippingSelected ? shippingSelected.value : '');
+        document.getElementById('shipping_cost_input') && (document.getElementById('shipping_cost_input').value = shipCost.toFixed(2));
+        amountHidden.value = (totalPrice + shipCost).toFixed(2);
+    }
 
 });
 

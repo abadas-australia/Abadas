@@ -1497,6 +1497,22 @@ select option {
     padding: 20px 0;
 }
 
+.checkout-total .shipping-section {
+    display: flex;
+    gap: 10px;
+}
+
+.checkout-total .shipping-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkout-total .shipping-options label {
+    margin-top: 3px;
+}
+
 .checkout-total{
     margin: 20px 0;
     font-size: 18px;
@@ -1504,13 +1520,80 @@ select option {
     color: #6C757D;
     border-radius: 5px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     background-color: #E9ECEF;
 }
 
 .checkout-total p{
     margin: 0;
+}
+
+/* Improved checkout total card */
+.checkout-total h3{
+    margin: 0 0 10px 0;
+    color: #222;
+}
+
+.checkout-total .shipping-section p{
+    margin: 10px 0 6px 0;
+    color: #495057;
+}
+
+.checkout-total .shipping-options{
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.checkout-total .shipping-options label{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    color: #212529;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.checkout-total .shipping-options label:hover{
+    border-color: #b67c54;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
+
+.checkout-total .shipping-options input[type="radio"]{
+    accent-color: #b67c54;
+}
+
+.checkout-total .summary{
+    margin-top: 14px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.checkout-total .summary-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: #212529;
+}
+
+.checkout-total .summary-row.total span:last-child{
+    font-weight: 800;
+    color: #000;
+}
+
+.checkout-total .summary-divider{
+    height: 1px;
+    background: #eee;
+}
+
+.checkout-total .summary-note{
+    margin-top: 10px;
 }
 
 .checkout .place-order {

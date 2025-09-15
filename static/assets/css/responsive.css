@@ -402,6 +402,15 @@ header nav .nav-menu-bar a svg:hover{
     overflow: scroll;
 }
 
+.checkout-total .shipping-section {
+    flex-direction: column;
+}
+
+.checkout-total .shipping-section .shipping-options {
+    gap: 0;
+    display: block;
+}
+
 
 /*----------------------------------------- footer -----------------------------------------*/
 

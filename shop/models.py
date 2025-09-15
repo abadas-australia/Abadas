@@ -73,26 +73,28 @@ class order(models.Model):
     order_id = models.AutoField(primary_key=True)
     items_json =  models.CharField(max_length=5000)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    name = models.CharField(max_length=90)
-    email = models.CharField(max_length=90)
-    address1 = models.CharField(max_length=200)
-    address2 = models.CharField(max_length=200)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=100)
-    oid=models.CharField(max_length=150,blank=True)
-    amountpaid=models.CharField(max_length=500,blank=True,null=True)
-    paymentstatus=models.CharField(max_length=20,blank=True)
-    phone = models.CharField(max_length=100,default="")
-    payid_proof = models.ImageField(upload_to='payment-proofs/', blank=True, null=True)
+    name = models.CharField("Name", max_length=90)
+    email = models.CharField("Email", max_length=90)
+    address1 = models.CharField("Address 1", max_length=200)
+    address2 = models.CharField("Address 2", max_length=200)
+    city = models.CharField("Suburb", max_length=100)
+    state = models.CharField("State", max_length=100)
+    zip_code = models.CharField("Post Code", max_length=100)
+    oid=models.CharField("Order Id", max_length=150, blank=True)
+    amountpaid=models.CharField("Amount Paid", max_length=500, blank=True, null=True)
+    paymentstatus=models.CharField("Payment Status", max_length=20, blank=True)
+    phone = models.CharField("Phone", max_length=100, default="")
+    payid_proof = models.ImageField("PayID Proof", upload_to='payment-proofs/', blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, help_text="User who placed the order (null for guest orders)")
-    is_guest_order = models.BooleanField(default=False, help_text="True if this is a guest order")
+    is_guest_order = models.BooleanField("Guest Order", default=False, help_text="True if this is a guest order")
+    shipping_method = models.CharField("Shipping Method", max_length=50, blank=True, help_text="Selected shipping method")
+    shipping_cost = models.DecimalField("Shipping Cost", max_digits=10, decimal_places=2, default=0.00, help_text="Shipping cost applied")
     STATUS_CHOICES = [
         ("PLACED", "Placed"),
         ("CONFIRMED", "Confirmed"),
         ("REJECTED", "Rejected"),
     ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PLACED")
+    status = models.CharField("Status", max_length=10, choices=STATUS_CHOICES, default="PLACED")
 
     def formatted_items(self):
         try:
@@ -118,6 +120,29 @@ class order(models.Model):
 
     def __str__(self):
         return self.name
+
+class ShippingOption(models.Model):
+    name = models.CharField(max_length=100, help_text="Shipping method name (e.g., 'Regular Post', 'Express Post')")
+    cost = models.DecimalField(max_digits=10, decimal_places=2, help_text="Shipping cost in dollars")
+    description = models.CharField(max_length=200, blank=True, help_text="Optional description for the shipping method")
+    is_active = models.BooleanField(default=True, help_text="Whether this shipping option is available")
+    is_default = models.BooleanField(default=False, help_text="Whether this is the default selected option")
+    sort_order = models.PositiveIntegerField(default=0, help_text="Order in which options appear (lower numbers first)")
+
+    class Meta:
+        ordering = ['sort_order', 'name']
+        verbose_name = "Shipping Option"
+        verbose_name_plural = "Shipping Options"
+
+    def __str__(self):
+        return f"{self.name} - ${self.cost}"
+
+    def save(self, *args, **kwargs):
+        # Ensure only one default option
+        if self.is_default:
+            ShippingOption.objects.filter(is_default=True).update(is_default=False)
+        super().save(*args, **kwargs)
+
 
 class orderUpdate(models.Model):
     update_id = models.AutoField(primary_key=True)

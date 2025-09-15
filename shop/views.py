@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from shop.models import product, order, Category
+from shop.models import product, order, Category, ShippingOption
 from math import ceil
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -62,7 +62,7 @@ def checkout(request):
         # Common data
         items_json = request.POST.get('itemsJson', '')
         name = request.POST.get('name', '')
-        amount = float(request.POST.get('amt'))  # Convert to float
+        amount = float(request.POST.get('amt'))  # Convert to float (includes shipping)
         email = request.POST.get('email', '')
         address1 = request.POST.get('address1', '')
         address2 = request.POST.get('address2', '')
@@ -71,6 +71,8 @@ def checkout(request):
         zip_code = request.POST.get('zip_code', '')
         phone = request.POST.get('phone', '')
         payment_method = request.POST.get('payment_method', '')  # New field
+        shipping_method = request.POST.get('shipping_method', '')
+        shipping_cost = request.POST.get('shipping_cost', '0')
 
 
         # Create an order instance
@@ -87,6 +89,8 @@ def checkout(request):
             phone=phone,
             user=request.user if request.user.is_authenticated else None,
             is_guest_order=not request.user.is_authenticated,
+            shipping_method=shipping_method,
+            shipping_cost=shipping_cost or 0,
         )
         request.session['order_id'] = order_instance.order_id
 
@@ -144,8 +148,12 @@ def checkout(request):
             return render(request, 'payment_success.html')
     
 
+    # Get active shipping options
+    shipping_options = ShippingOption.objects.filter(is_active=True).order_by('sort_order', 'name')
+    
     context = {
         'PAYPAL_CLIENT_ID': settings.PAYPAL_CLIENT_ID,
+        'shipping_options': shipping_options,
     }
     return render(request, 'checkout.html', context)
 
@@ -197,6 +205,8 @@ def payment_success(request):
             state = request.POST.get('state')
             zip_code = request.POST.get('zip_code')
             phone = request.POST.get('phone')
+            shipping_method = request.POST.get('shipping_method', '')
+            shipping_cost = request.POST.get('shipping_cost', '0')
 
 
             new_order = order(
@@ -215,6 +225,8 @@ def payment_success(request):
                 phone=phone,
                 user=request.user if request.user.is_authenticated else None,
                 is_guest_order=not request.user.is_authenticated,
+                shipping_method=shipping_method,
+                shipping_cost=shipping_cost or 0,
             )
             new_order.save()
             send_order_placed_email(new_order)

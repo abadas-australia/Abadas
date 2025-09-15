@@ -22,7 +22,38 @@
                     </div>
                     
                     <div class="checkout-total">
-                        <p>Your Cart Total Is <b><span id="totalprice"></span> <span id="amount"></span></b>. Enter your details below & place your order. Thank you for using Abadas.</p>
+                        <h3>Order Summary</h3>
+                        <div class="shipping-section">
+                            <p>Select shipping:</p>
+                            <div class="shipping-options">
+                                {% for option in shipping_options %}
+                                <label>
+                                    <input type="radio" name="shipping_method" value="{{ option.name }}" data-cost="{{ option.cost }}" {% if option.is_default %}checked{% endif %}>
+                                    <span>{{ option.name }} ({% if option.cost == 0 %}Free shipping{% else %}${{ option.cost }}{% endif %})</span>
+                                </label>
+                                {% empty %}
+                                <p>No shipping options available. Please contact us.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span id="shipping-cost-display">$0.00</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="grand-total">$0.00</span>
+                            </div>
+                        </div>
+
+                        <p class="summary-note">Enter your details below and place your order. Thank you for using Abadas.</p>
                     </div>
                 </div>
             </div>
@@ -33,6 +64,8 @@
 
                     <input type="hidden" name="itemsJson" id="itemsJson">
                     <input type="hidden" id="amt" name="amt">
+                    <input type="hidden" id="shipping_method_input" name="shipping_method">
+                    <input type="hidden" id="shipping_cost_input" name="shipping_cost">
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
@@ -48,28 +81,38 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="inputAddress">Address</label>
-                            <input type="text" class="form-control" id="address1" name="address1" required>
+                            <input type="text" class="form-control" id="address1" name="address1" placeholder="123 Example Street, Gold Coast QLD" required>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="inputAddress">Address line 2(Optional)</label>
-                            <input type="text" class="form-control" id="address2" name="address2">
+                            <label for="inputAddress">Address line 2 (Optional)</label>
+                            <input type="text" class="form-control" placeholder="Apartment, Unit, Suite, or Floor" id="address2" name="address2">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="inputCity">City</label>
+                            <label for="inputCity">Suburb</label>
                             <input type="text" class="form-control" id="city" name="city" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputState">State</label>
-                            <input type="text" class="form-control" id="state" name="state" required>
+                            <select class="form-control" id="state" name="state" required>
+                                <option value="" disabled selected>Select state</option>
+                                <option value="ACT">Australian Capital Territory (ACT)</option>
+                                <option value="NSW">New South Wales (NSW)</option>
+                                <option value="NT">Northern Territory (NT)</option>
+                                <option value="QLD">Queensland (QLD)</option>
+                                <option value="SA">South Australia (SA)</option>
+                                <option value="TAS">Tasmania (TAS)</option>
+                                <option value="VIC">Victoria (VIC)</option>
+                                <option value="WA">Western Australia (WA)</option>
+                            </select>
                         </div>
                         </div>
 
                      <div class="form-row">
                      <div class="form-group col-md-6">
-                            <label for="inputZip">Pin Code</label>
+                            <label for="inputZip">Post Code</label>
                             <input type="number" class="form-control" id="zip_code" name="zip_code" required>
                         </div>
                     <div class="form-group col-md-6">
@@ -151,6 +194,7 @@
         const paypalRadio = document.querySelector('input[value="paypal"]');
         const cardRadio = document.querySelector('input[value="card"]');
         const payidRadio = document.querySelector('input[value="payid"]');
+        const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
         
 
         // Disable the PayPal button initially
@@ -173,6 +217,34 @@
             payidBtn.style.display = "none";
         }
 
+        // Shipping helpers
+        function getSelectedShipping() {
+            let selected = document.querySelector('input[name="shipping_method"]:checked');
+            const cost = selected ? parseFloat(selected.getAttribute('data-cost')) : 0;
+            const method = selected ? selected.value : '';
+            return { cost, method };
+        }
+
+        function updateTotals() {
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const shippingEl = document.getElementById('shipping-cost-display');
+            const grandTotalEl = document.getElementById('grand-total');
+            const amountHidden = document.getElementById('amt');
+            const shippingMethodHidden = document.getElementById('shipping_method_input');
+            const shippingCostHidden = document.getElementById('shipping_cost_input');
+
+            const subtotal = window.__checkoutSubtotal || 0;
+            const { cost, method } = getSelectedShipping();
+            const grand = (subtotal + cost).toFixed(2);
+
+            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            if (shippingEl) shippingEl.textContent = `$${cost.toFixed(2)}`;
+            if (grandTotalEl) grandTotalEl.textContent = `$${grand}`;
+            if (amountHidden) amountHidden.value = grand;
+            if (shippingMethodHidden) shippingMethodHidden.value = method;
+            if (shippingCostHidden) shippingCostHidden.value = cost.toFixed(2);
+        }
+
         // Form validation function
         function validateForm() {
             const name = document.getElementById('name').value.trim();
@@ -186,6 +258,12 @@
             // Check if all required fields are filled
             return name && email && address1 && city && state && zipCode && phone;
         }
+
+        // Update totals when shipping changes
+        shippingRadios.forEach(r => r.addEventListener('change', updateTotals));
+
+        // Initialize totals on load
+        updateTotals();
 
         // Enable PayPal button when the form is valid
         document.querySelectorAll('input').forEach(input => {
@@ -252,7 +330,7 @@
                     },
                     purchase_units: [{
                         amount: {
-                            value: document.getElementById('amt').value, // Total amount from the form
+                            value: document.getElementById('amt').value,
                         },
                     }],
                 });
@@ -266,6 +344,8 @@
                     formData.append('transaction_id', details.id);
                     formData.append('items_json', document.getElementById('itemsJson').value);
                     formData.append('amount', document.getElementById('amt').value);
+                    formData.append('shipping_method', document.getElementById('shipping_method_input').value);
+                    formData.append('shipping_cost', document.getElementById('shipping_cost_input').value);
                     formData.append('name', document.getElementById('name').value);
                     formData.append('email', document.querySelector('.email').value);
                     formData.append('address1', document.getElementById('address1').value);

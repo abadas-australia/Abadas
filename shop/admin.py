@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shop.models import product, order, orderUpdate, Category
+from shop.models import product, order, orderUpdate, Category, ShippingOption
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -123,5 +123,23 @@ admin.site.register(order, orderAdmin)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "is_active")
     prepopulated_fields = {"slug": ("name",)}
+
+@admin.register(ShippingOption)
+class ShippingOptionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'cost', 'is_active', 'is_default', 'sort_order')
+    list_editable = ('cost', 'is_active', 'is_default', 'sort_order')
+    list_filter = ('is_active', 'is_default')
+    search_fields = ('name', 'description')
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'cost', 'description')
+        }),
+        ('Settings', {
+            'fields': ('is_active', 'is_default', 'sort_order')
+        }),
+    )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('sort_order', 'name')
 
 # Register your models here.
