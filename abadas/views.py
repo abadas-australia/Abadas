@@ -38,9 +38,19 @@ def index(request, category=None):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and search_query:
         matching_products = product.objects.filter(
             Q(product_name__icontains=search_query)
-        ).values('id', 'product_name', 'product_price', 'product_image_1', 'stock_status')
+        )
 
-        data = {'results': list(matching_products)}
+        results = []
+        for p in matching_products:
+            results.append({
+                'id': p.id,
+                'product_name': p.product_name,
+                'product_price': str(p.product_price),
+                'product_image_url': p.product_image_1.url if p.product_image_1 else '',
+                'stock_status': p.stock_status,
+            })
+
+        data = {'results': results}
         return JsonResponse(data)
 
     data = {

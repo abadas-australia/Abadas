@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function (){
         event.preventDefault(); // Prevent form submission
         const searchQuery = document.querySelector("input[name='search']").value;
     
-        fetch(`http://127.0.0.1:8000/?search=${encodeURIComponent(searchQuery)}`, {
+        fetch(`/?search=${encodeURIComponent(searchQuery)}`, {
             headers: { "X-Requested-With": "XMLHttpRequest" },
         })
         .then(response => response.json())
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function (){
                     const productHTML = `
                         <div class="search-category-item">
                             <a href="/shop/product-details/${item.id}/">
-                                <img src="/media/${item.product_image_1}">
+                                <img src="${item.product_image_url}">
                                 <div class="search-overlay">${item.product_name}<br> $${item.product_price}</div>
                             </a>
                         </div>`;
