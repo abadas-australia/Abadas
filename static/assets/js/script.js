@@ -305,9 +305,24 @@ document.addEventListener("DOMContentLoaded", function (){
     function updateCartQuantity(idstr, color, size) {
         let qtyInput = document.getElementById('quantity' + idstr);
         let qty = parseInt(qtyInput.value);
+        let originalQty = qty;
 
         // Create unique ID for the color-size variation
         let uniqueId = `${idstr}_${color}_${size}`;
+
+        // Respect available stock if provided by quickview
+        try {
+            let key = `${color}|${size}`;
+            let available = (window.__VARIANT_QTY__ && window.__VARIANT_QTY__[key] !== undefined)
+                ? parseInt(window.__VARIANT_QTY__[key]) : null;
+            if (available !== null) {
+                qty = Math.max(1, Math.min(qty, available));
+                qtyInput.value = qty; // clamp UI input too
+                if (originalQty > available) {
+                    alert(`Only ${available} available for this variation.`);
+                }
+            }
+        } catch (e) {}
 
         if (cart[uniqueId]) {
             cart[uniqueId][0] = qty; // Update the quantity in the cart
@@ -345,17 +360,37 @@ document.addEventListener("DOMContentLoaded", function (){
                 // Create unique key for each color-size variation
                 let uniqueId = `${idstr}_${color}_${size}`;
 
+                // Determine available stock from page (if provided)
+                let available = null;
+                try {
+                    let key = `${color}|${size}`;
+                    if (window.__VARIANT_QTY__ && window.__VARIANT_QTY__[key] !== undefined) {
+                        available = parseInt(window.__VARIANT_QTY__[key]);
+                    }
+                } catch (e) {}
+
                 // Proceed with adding to cart if color and size are selected
                 if (cart[uniqueId] !== undefined) {
-                    cart[uniqueId][0] += qty; // Increment quantity
+                    let newQty = cart[uniqueId][0] + qty;
+                    let clampedQty = newQty;
+                    if (available !== null) clampedQty = Math.min(newQty, available);
+                    if (clampedQty < newQty) {
+                        alert(`Only ${available} available for this variation.`);
+                    }
+                    cart[uniqueId][0] = clampedQty;
                 } else {
                     // Get product details
                     let name = document.getElementById('name' + idstr).innerHTML;
                     let price = document.getElementById('price' + idstr).innerHTML;
                     let imageUrl = document.getElementById('image' + idstr).getAttribute('src');
 
-                    // Store color and size in the cart data
-                    cart[uniqueId] = [qty, name, price, color, size, imageUrl];
+                    // Store color and size in the cart data, respect available
+                    let startQty = qty;
+                    if (available !== null) {
+                        if (qty > available) alert(`Only ${available} available for this variation.`);
+                        startQty = Math.min(startQty, available);
+                    }
+                    cart[uniqueId] = [startQty, name, price, color, size, imageUrl];
                 }
 
                 // Save cart to localStorage and update UI

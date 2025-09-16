@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from shop.models import product, order, Category, ShippingOption
+from shop.models import product, order, Category, ShippingOption, ProductStock
+import json
 from math import ceil
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -46,15 +47,35 @@ def shop(request, category=None):
 
 def productDetails(request, id):
     prod = get_object_or_404(product, id=id)
-    colors = prod.product_color.split(",")
-    sizes = prod.product_size.split(",")
+    # Prefer variant-based options from ProductStock; fallback to comma fields
+    variant_qs = ProductStock.objects.filter(product=prod, quantity__gt=0)
+    if variant_qs.exists():
+        colors = sorted(set(v.color for v in variant_qs))
+        sizes = sorted(set(v.size for v in variant_qs))
+        options_by_color = {}
+        quantities = {}
+        for v in variant_qs:
+            options_by_color.setdefault(v.color, set()).add(v.size)
+            quantities[f"{v.color}|{v.size}"] = v.quantity
+        # Convert sets to lists for JSON serialization
+        options_by_color = {c: sorted(list(sizes_set)) for c, sizes_set in options_by_color.items()}
+    else:
+        colors = [c.strip() for c in (prod.product_color or '').split(',') if c.strip()]
+        sizes = [s.strip() for s in (prod.product_size or '').split(',') if s.strip()]
+        options_by_color = {}
+        quantities = {}
 
     data = {
         'product': prod,
         'colors': colors,
         'sizes': sizes,
+        'variant_options_by_color_json': json.dumps(options_by_color),
+        'variant_quantities_json': json.dumps(quantities),
     }
     return render(request, "quickview.html", data)
+
+
+# Stock is deducted only upon admin confirmation, not here
 
 
 def checkout(request):
@@ -179,7 +200,6 @@ def payment_success(request):
                 order_instance.oid = payment_id
                 order_instance.amountpaid = order_instance.amount
                 order_instance.save()
-
 
                 send_order_placed_email(order_instance)
                 send_admin_order_notification(order_instance)

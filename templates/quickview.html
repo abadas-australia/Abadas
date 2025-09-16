@@ -75,5 +75,55 @@
     </div>
 </section>
 
+<script>
+    // Dynamically filter sizes by selected color and show stock qty if provided
+    (function(){
+        var optionsByColor = {{ variant_options_by_color_json|safe }};
+        var quantities = {{ variant_quantities_json|safe }};
+        window.__VARIANT_QTY__ = quantities;
+        var colorSel = document.getElementById('color');
+        var sizeSel = document.getElementById('size');
+        var qtyInput = document.getElementById('quantitypr{{product.id}}');
+        function refreshSizes(){
+            if(!optionsByColor || !colorSel) return;
+            var selected = colorSel.value;
+            if(!selected || !optionsByColor[selected]) return;
+            var sizes = optionsByColor[selected];
+            var current = sizeSel.value;
+            sizeSel.innerHTML = '<option value="">Choose an option</option>';
+            sizes.forEach(function(sz){
+                var label = sz;
+                var key = selected + '|' + sz;
+                var opt = document.createElement('option');
+                opt.value = sz;
+                opt.textContent = label;
+                sizeSel.appendChild(opt);
+            });
+            if (sizes.includes(current)) sizeSel.value = current; else sizeSel.value = '';
+        }
+        if(colorSel) colorSel.addEventListener('change', refreshSizes);
+        document.addEventListener('DOMContentLoaded', refreshSizes);
+
+        // Prevent adding more than available per variant
+        document.addEventListener('click', function(e){
+            var target = e.target;
+            if (target && target.id === 'pr{{product.id}}') {
+                var c = colorSel.value;
+                var s = sizeSel.value;
+                if (!c || !s) return; // global JS will alert
+                var key = c + '|' + s;
+                var available = quantities[key];
+                var desired = qtyInput ? parseInt(qtyInput.value || '1') : 1;
+                if (typeof available === 'number' && desired > available) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    alert('Only ' + available + ' in stock for this variant.');
+                    if (qtyInput) qtyInput.value = available;
+                }
+            }
+        }, true);
+    })();
+</script>
+
 
 {% endblock content %}
