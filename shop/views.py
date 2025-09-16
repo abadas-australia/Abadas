@@ -304,7 +304,7 @@ def send_admin_order_notification(order_instance):
         'zip_code': order_instance.zip_code,
         'order_items': order_instance.formatted_items(),
         'payment_proof_url': payment_proof_url,
-        'admin_url': f"https://abadas.vercel.app/abadas-admin/shop/order/{order_instance.order_id}/change/",
+        'admin_url': f"https://www.abadas.com.au/abadas-admin/shop/order/{order_instance.order_id}/change/",
     })
     
     email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [admin_email])
