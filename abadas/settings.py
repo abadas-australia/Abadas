@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9f!i+71%_4mn3nyhc%z@c=qqxv08xvtv%6h9y0r7^*r1))_$g0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -148,12 +148,17 @@ EMAIL_USE_TLS = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 import os
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR/'assets'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR/'staticfiles'
 
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'static')
 ]
+
+
+# WhiteNoise settings (keep enabled for Vercel)
+# Allow using finders so static files are served even if collectstatic misses some files
+WHITENOISE_USE_FINDERS = True
 
 
 # MEDIA_URL ='/media/'
@@ -165,14 +170,17 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",  # changed from CompressedManifestStaticFilesStorage
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
 # Backwards compatibility for third-party apps that still read legacy settings
 # These mirror the values configured in STORAGES above
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"  # changed from CompressedManifestStaticFilesStorage
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+# Relax manifest strictness to avoid failures on missing sourcemaps referenced by vendor CSS
+WHITENOISE_MANIFEST_STRICT = False
 
 
 CLOUDINARY_STORAGE = {
