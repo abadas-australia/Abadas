@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'contact',
     'authentication',
     'shop',
+    'tinymce',
 ]
 
 MIDDLEWARE = [

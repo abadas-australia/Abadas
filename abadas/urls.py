@@ -29,7 +29,7 @@ urlpatterns = [
     path('auth/', include("authentication.urls")),
     path('shop/', include("shop.urls")),
     path('checkout', checkout, name="checkout"),
-    path('developer/mohiul-islam-miraz', views.developer, name="developer")
+    path('developer', views.developer, name="developer")
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

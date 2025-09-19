@@ -5,6 +5,7 @@ import json
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from tinymce.models import HTMLField
 
 # Create your models here.
 
@@ -37,7 +38,7 @@ class product(models.Model):
     product_name = models.CharField(max_length=100)
     product_category = models.ForeignKey(Category, related_name='products', on_delete=models.PROTECT, null=True, blank=True)
     product_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    product_desc = models.TextField()
+    product_desc = HTMLField()
     # Kept for backward compatibility with existing data entry; now optional.
     # New stock tracking uses ProductStock rows below.
     product_color = models.TextField(blank=True, default="")
