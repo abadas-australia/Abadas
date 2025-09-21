@@ -136,13 +136,13 @@ def checkout(request):
                             "name": f"Order #{order_instance.order_id}",
                             "sku": f"{order_instance.order_id}",
                             "price": amount,
-                            "currency": "USD",
+                            "currency": "AUD",
                             "quantity": 1
                         }]
                     },
                     "amount": {
                         "total": str(amount),
-                        "currency": "USD"
+                        "currency": "AUD"
                     },
                     "description": f"Order #{order_instance.order_id}"
                 }]
