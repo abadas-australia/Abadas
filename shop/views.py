@@ -212,6 +212,11 @@ def payment_success(request):
             return redirect('shop')
     
     else:
+        # For card payments or GET requests (redirects)
+        if request.method == 'GET':
+            # This is a redirect to show success page, just render it
+            return render(request, 'payment_success.html')
+        
         # For card payments, try to get existing order from session first
         order_id = request.session.get('order_id')
         if order_id:

@@ -369,6 +369,7 @@
                     })
                     .then(response => {
                         if (response.ok) {
+                            // Payment processed successfully, redirect to success page
                             window.location.href = '/shop/payment/success/';
                         } else {
                             alert('Error saving the order. Please contact support.');
