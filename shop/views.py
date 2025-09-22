@@ -182,21 +182,22 @@ def checkout(request):
 @csrf_exempt
 def payment_success(request):
     
-    order_id = request.session.get('order_id')
-    if not order_id:
-        messages.error(request, "Order ID not found in session.")
-        return redirect('shop')
-
     payment_id = request.GET.get('paymentId')
     payer_id = request.GET.get('PayerID')
+    
+    # Check if this is a PayPal account payment (has paymentId and payerId in URL)
+    if payment_id and payer_id:  # PayPal account payment
+        order_id = request.session.get('order_id')
+        if not order_id:
+            messages.error(request, "Order ID not found in session.")
+            return redirect('shop')
 
-    order_instance = get_object_or_404(order, order_id=order_id)
-
-    if payment_id and payer_id:  # PayPal payment
+        order_instance = get_object_or_404(order, order_id=order_id)
+        
         try:
             payment = PayPalPayment.find(payment_id)
             if payment.execute({"payer_id": payer_id}):
-                order_instance.paymentstatus = "Paid"
+                order_instance.paymentstatus = "Success"
                 order_instance.oid = payment_id
                 order_instance.amountpaid = order_instance.amount
                 order_instance.save()
@@ -211,51 +212,87 @@ def payment_success(request):
             return redirect('shop')
     
     else:
-        try:
-            # Retrieve form data
-            transaction_id = request.POST.get('transaction_id')
-            items_json = request.POST.get('items_json')
-            amount = request.POST.get('amount')  # From form
-            amount_paid = request.POST.get('amount_paid')  # From PayPal
-            name = request.POST.get('name')
-            email = request.POST.get('email')
-            address1 = request.POST.get('address1')
-            address2 = request.POST.get('address2')
-            city = request.POST.get('city')
-            state = request.POST.get('state')
-            zip_code = request.POST.get('zip_code')
-            phone = request.POST.get('phone')
-            shipping_method = request.POST.get('shipping_method', '')
-            shipping_cost = request.POST.get('shipping_cost', '0')
+        # For card payments, try to get existing order from session first
+        order_id = request.session.get('order_id')
+        if order_id:
+            try:
+                # Update existing order with payment details
+                order_instance = get_object_or_404(order, order_id=order_id)
+                
+                # Retrieve form data
+                transaction_id = request.POST.get('transaction_id')
+                amount_paid = request.POST.get('amount_paid')
+                
+                if transaction_id:
+                    order_instance.oid = transaction_id
+                    order_instance.amountpaid = amount_paid or order_instance.amount
+                    order_instance.paymentstatus = "Success"
+                    order_instance.save()
+                    
+                    send_order_placed_email(order_instance)
+                    send_admin_order_notification(order_instance)
+                    return render(request, 'payment_success.html', {'order': order_instance})
+                else:
+                    messages.error(request, "Transaction ID not found.")
+                    return redirect('shop')
+                    
+            except Exception as e:
+                print("Error updating existing order:", e)
+                messages.error(request, "An error occurred during payment processing.")
+                return redirect('shop')
+        else:
+            # Fallback: create new order if no session order found
+            try:
+                # Retrieve form data
+                transaction_id = request.POST.get('transaction_id')
+                items_json = request.POST.get('items_json')
+                amount = request.POST.get('amount')  # From form
+                amount_paid = request.POST.get('amount_paid')  # From PayPal
+                name = request.POST.get('name')
+                email = request.POST.get('email')
+                address1 = request.POST.get('address1')
+                address2 = request.POST.get('address2')
+                city = request.POST.get('city')
+                state = request.POST.get('state')
+                zip_code = request.POST.get('zip_code')
+                phone = request.POST.get('phone')
+                shipping_method = request.POST.get('shipping_method', '')
+                shipping_cost = request.POST.get('shipping_cost', '0')
 
+                # Validate required fields
+                if not all([transaction_id, items_json, amount, name, email, address1, city, state, zip_code, phone]):
+                    messages.error(request, "Missing required payment information.")
+                    return redirect('shop')
 
-            new_order = order(
-                items_json=items_json,
-                amount=amount,
-                name=name,
-                email=email,  # Save email
-                address1=address1,
-                address2=address2,
-                city=city,
-                state=state,
-                zip_code=zip_code,
-                oid=transaction_id,
-                amountpaid=amount_paid,  # Save amount paid
-                paymentstatus="Success",
-                phone=phone,
-                user=request.user if request.user.is_authenticated else None,
-                is_guest_order=not request.user.is_authenticated,
-                shipping_method=shipping_method,
-                shipping_cost=shipping_cost or 0,
-            )
-            new_order.save()
-            send_order_placed_email(new_order)
-            send_admin_order_notification(new_order)
+                new_order = order(
+                    items_json=items_json,
+                    amount=amount,
+                    name=name,
+                    email=email,  # Save email
+                    address1=address1,
+                    address2=address2,
+                    city=city,
+                    state=state,
+                    zip_code=zip_code,
+                    oid=transaction_id,
+                    amountpaid=amount_paid,  # Save amount paid
+                    paymentstatus="Success",
+                    phone=phone,
+                    user=request.user if request.user.is_authenticated else None,
+                    is_guest_order=not request.user.is_authenticated,
+                    shipping_method=shipping_method,
+                    shipping_cost=shipping_cost or 0,
+                )
+                new_order.save()
+                send_order_placed_email(new_order)
+                send_admin_order_notification(new_order)
 
-            return render(request, 'payment_success.html', {'order': new_order})
+                return render(request, 'payment_success.html', {'order': new_order})
 
-        except Exception as e:
-            return render(request, 'payment_success.html', {'order': new_order})
+            except Exception as e:
+                print("Error processing card payment:", e)
+                messages.error(request, "An error occurred during payment processing.")
+                return redirect('shop')
 
 
 def send_order_placed_email(order_instance):
