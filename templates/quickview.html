@@ -3,18 +3,26 @@
 {% block content %}
 {% load static %}
 
+<style>
+    /* Quick-view image zoom */
+    .quick-view .zoomable { position: relative; overflow: hidden; }
+    .quick-view .zoomable img { transition: transform 0.06s ease; will-change: transform; display: block; }
+    .quick-view .zoomable { cursor: zoom-out; }
+    .quick-view .zoomable.is-zoomed { cursor: zoom-out; }
+</style>
+
 <section id="quick-view">
     <div class="quick-view">
         <div class="quick-view-images">
             <div class="quick-view-images-top">
-                <div><img id="imagepr{{product.id}}" src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}"></div>
-                <div><img src="{{ product.product_image_2.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><img id="imagepr{{product.id}}" src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><img src="{{ product.product_image_2.url }}" alt="{{ product.product_name }}"></div>
             </div>
 
             <div class="quick-view-images-bottom">
-                <div><img src="{{ product.product_image_3.url }}" alt="{{ product.product_name }}"></div>
-                <div><img src="{{ product.product_image_4.url }}" alt="{{ product.product_name }}"></div>
-                <div><img src="{{ product.product_image_5.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><img src="{{ product.product_image_3.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><img src="{{ product.product_image_4.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><img src="{{ product.product_image_5.url }}" alt="{{ product.product_name }}"></div>
             </div>
         </div>
 
@@ -125,5 +133,35 @@
     })();
 </script>
 
+
+<script>
+    // Lightweight zoom-on-hover that follows cursor; no external dependencies
+    (function(){
+        if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return; // skip on touch
+        function attachZoom(container){
+            if(!container) return;
+            var img = container.querySelector('img');
+            if(!img) return;
+            var scale = 2; // zoom factor
+            function onEnter(){ container.classList.add('is-zoomed'); }
+            function onLeave(){ container.classList.remove('is-zoomed'); img.style.transform = 'none'; img.style.transformOrigin = 'center center'; }
+            function onMove(e){
+                if(!container.classList.contains('is-zoomed')) return;
+                var rect = img.getBoundingClientRect();
+                var x = ((e.clientX - rect.left) / rect.width) * 100;
+                var y = ((e.clientY - rect.top) / rect.height) * 100;
+                img.style.transformOrigin = x + '% ' + y + '%';
+                img.style.transform = 'scale(' + scale + ')';
+            }
+            container.addEventListener('mouseenter', onEnter);
+            container.addEventListener('mouseleave', onLeave);
+            container.addEventListener('mousemove', onMove);
+        }
+        document.addEventListener('DOMContentLoaded', function(){
+            var zoomables = document.querySelectorAll('.quick-view .zoomable');
+            zoomables.forEach(attachZoom);
+        });
+    })();
+</script>
 
 {% endblock content %}
