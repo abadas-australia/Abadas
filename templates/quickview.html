@@ -15,14 +15,14 @@
     <div class="quick-view">
         <div class="quick-view-images">
             <div class="quick-view-images-top">
-                <div class="zoomable"><img id="imagepr{{product.id}}" src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}"></div>
-                <div class="zoomable"><img src="{{ product.product_image_2.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><a href="{{ product.product_image_1.url }}"><img id="imagepr{{product.id}}" src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}"></a></div>
+                <div class="zoomable"><a href="{{ product.product_image_2.url }}"><img src="{{ product.product_image_2.url }}" alt="{{ product.product_name }}"></a></div>
             </div>
 
             <div class="quick-view-images-bottom">
-                <div class="zoomable"><img src="{{ product.product_image_3.url }}" alt="{{ product.product_name }}"></div>
-                <div class="zoomable"><img src="{{ product.product_image_4.url }}" alt="{{ product.product_name }}"></div>
-                <div class="zoomable"><img src="{{ product.product_image_5.url }}" alt="{{ product.product_name }}"></div>
+                <div class="zoomable"><a href="{{ product.product_image_3.url }}"><img src="{{ product.product_image_3.url }}" alt="{{ product.product_name }}"></a></div>
+                <div class="zoomable"><a href="{{ product.product_image_4.url }}"><img src="{{ product.product_image_4.url }}" alt="{{ product.product_name }}"></a></div>
+                <div class="zoomable"><a href="{{ product.product_image_5.url }}"><img src="{{ product.product_image_5.url }}" alt="{{ product.product_name }}"></a></div>
             </div>
         </div>
 
